@@ -70,9 +70,12 @@ int main(int argc, char** argv)
     userXMLName = argv[1];
     masterXMLName = argv[2];
   }
+
   jetscape->SetXMLMasterFileName(masterXMLName);
   jetscape->SetXMLUserFileName(userXMLName);
 
+  jetscape->SetReuseHydro (true);
+  jetscape->SetNReuseHydro (1000000);
   // Intialize all modules tasks
   jetscape->Init();
 

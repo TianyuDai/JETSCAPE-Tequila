@@ -36,7 +36,7 @@ using std::ofstream;
 using std::ifstream;
 using std::ostream;
 using std::ios;
-
+ofstream fout("hydro_generation"); 
 int Martini::pLabelNew = 0;
 
 Martini::Martini() {
@@ -200,7 +200,8 @@ void Martini::DoEnergyLoss(double deltaT, double Time, double Q2,
     T = check_fluid_info_ptr->temperature;
 
     beta = sqrt(vx * vx + vy * vy + vz * vz);
-
+    fout << xx << " " << yy << " " << zz << " " << tt << " " << T << "\n";
+    JSINFO << pIn[i].t();  
     // Only accept low t particles
     if (pIn[i].t() > Q0 * Q0 + rounding_error || Time <= boostedTStart ||
         T < hydro_Tc)

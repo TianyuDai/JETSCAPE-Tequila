@@ -16,6 +16,7 @@
 #include <iostream>
 
 #include "PartonPrinter.h"
+#include "JetScapeXML.h"
 #include "GTL/graph.h"
 #include <GTL/edge_map.h>
 #include <GTL/node_map.h>

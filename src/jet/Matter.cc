@@ -260,6 +260,7 @@ void Matter::DoEnergyLoss(double deltaT, double time, double Q2,
       return;
     }
 
+
     // Reject photons
 
     if (std::abs(pIn[i].pstat()) == 1) {
@@ -329,7 +330,7 @@ void Matter::DoEnergyLoss(double deltaT, double time, double Q2,
     for (int j = 0; j <= 3; j++) {
       xStart[j] = pIn[i].x_in().comp(j);
     }
-
+    
     // SC: read in hydro
     initR0 = xStart[0];
     initRx = xStart[1];
@@ -405,6 +406,7 @@ void Matter::DoEnergyLoss(double deltaT, double time, double Q2,
     zeta = ((xStart[0] + initRdotV) / std::sqrt(2)) * fmToGeVinv;
 
     VERBOSE(8) << BOLDYELLOW << " zeta = " << zeta;
+    
 
     // if(now_R0^2-now_Ri^2<0) print out pIn info and exit
 
@@ -455,6 +457,7 @@ void Matter::DoEnergyLoss(double deltaT, double time, double Q2,
                   "proceed... ";
         // cin >> blurb; //remove the input to prevent an error caused by heavy quark from pythia (by Chathuranga)
       }
+
 
       iSplit = 0; // (anti)quark splitting into (anti)quark + gluon
       if (pIn[i].pid() == gid) {
@@ -592,6 +595,7 @@ void Matter::DoEnergyLoss(double deltaT, double time, double Q2,
       VERBOSE(8);
       // end VERBOSE OUTPUT:
     }
+    
 
     // SC: Q0 can be changed based on different setups
     if (in_vac) { // for vaccuum

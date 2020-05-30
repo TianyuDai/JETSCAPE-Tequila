@@ -10,22 +10,9 @@
 
  <jetscape>
 
-  <!-- General settings -->
-  <nEvents> 100 </nEvents>
-  <setReuseHydro> true </setReuseHydro>
-  <nReuseHydro> 10 </nReuseHydro>
-
-  <!-- Technical settings -->
-  <debug> on </debug>
+  <debug> off </debug>
   <remark> off </remark>
-  <vlevel> 0 </vlevel>
-  <enableAutomaticTaskListDetermination> true </enableAutomaticTaskListDetermination>
-  
-  <!--  JetScape Writer Settings -->
-  <outputFilename>test_out</outputFilename>
-  <JetScapeWriterAscii> off </JetScapeWriterAscii>
-  <JetScapeWriterAsciiGZ> off </JetScapeWriterAsciiGZ>
-  <JetScapeWriterHepMC> off </JetScapeWriterHepMC>
+  <vlevel> 9 </vlevel>
 
   <!--  Random Settings. For now, just a global  seed. -->
   <!--  Note: It's each modules responsibility to adopt it -->
@@ -50,30 +37,40 @@
     <grid_step_z> 0.2 </grid_step_z>
     
     <Trento>
-    <PhysicsInputs  projectile='Pb'
-            target='Pb'
-            sqrts='2760'
-            cross-section='6.4'
-            normalization='13.9'>
-    </PhysicsInputs>
-    <CutInputs  centrality-low='50'
-          centrality-high='60'>
-    </CutInputs>
-    <TransInputs  reduced-thickness='0.0'
-            fluctuation="1.2"
-            nucleon-width="0.9"
-            nucleon-min-dist="1.2">
-    </TransInputs>
-    <LongiInputs  mean-coeff="1.0"
-            std-coeff="3.0"
-            skew-coeff="0.0"
-            skew-type="1"
-            jacobian="0.8">
-    </LongiInputs>
+		<PhysicsInputs	projectile='Au'
+						target='Au'
+						sqrts='200'
+						cross-section='4.2'
+						normalization='13.'>
+		</PhysicsInputs>
+		<CutInputs	centrality-low='0'
+					centrality-high='100' b-min='5' b-max='5.01'>
+		</CutInputs>
+                <!--
+                'normalization':13.,
+                'reduced-thickness':0.1,
+                'fluctuation':0.9,
+                'nucleon-min-dist':0.4,
+                'cross-section':4.2, # in fermi
+                'nucleon-width':0.8,
+                'b-min':5,
+                'b-max':5.01,
+                'random-seed':1
+                -->
+		<TransInputs	reduced-thickness='0.1'
+						fluctuation="0.9"
+						nucleon-width="0.8"
+						nucleon-min-dist="0.4">
+		</TransInputs>
+		<LongiInputs	mean-coeff="1.0"
+						std-coeff="3.0"
+						skew-coeff="0.0"
+						skew-type="1"
+						jacobian="0.8">
+		</LongiInputs>
     </Trento>
 
     <!-- Options to read initial conditions from saved file  -->
-    <initial_profile_path>../examples/test_hydro_files</initial_profile_path>
   </IS>
 
   <!-- Hard Process -->
@@ -83,7 +80,6 @@
     <PGun>
       <name>PGun</name>
       <pT>100</pT>
-      <parID>21</parID>
       <useHybridHad>0</useHybridHad>
     </PGun>
 
@@ -92,15 +88,17 @@
     <PythiaGun>
       <name>PythiaGun</name>
       <FSR_on>0</FSR_on>
-      <pTHatMin>100</pTHatMin>
-      <pTHatMax>120</pTHatMax>
-      <eCM>5020</eCM>
+      <pTHatMin>5</pTHatMin>
+      <pTHatMax>10</pTHatMax>
+      <eCM>200</eCM>
       <useHybridHad>0</useHybridHad>
       <!-- You can add any number of additional lines to initialize pythia here -->
       <!-- Note that if the tag exists it cannot be empty (tinyxml produces a segfault) -->
-      <!-- <LinesToRead> -->
+      <LinesToRead>
       <!-- 	HardQCD:all = on -->
-      <!-- </LinesToRead> -->
+	PDF:useHardNPDFA = on
+	PDF:useHardNPDFB = on
+      </LinesToRead>
     </PythiaGun>     
   </Hard>   
   
@@ -108,17 +106,16 @@
   <!-- Individual Eloss Modules run Eloss and Eloss Manager  -->
   <Eloss>
 
-    <deltaT>0.1</deltaT>
+    <deltaT>0.01</deltaT>
     <formTime> -0.1</formTime>
-    <maxT>20</maxT>
+    <maxT>1.</maxT>
     <mutex>ON</mutex>
-    <AddLiquefier> false </AddLiquefier>
 
     <Matter>
       <name>Matter</name>
       <useHybridHad>0</useHybridHad>
       <matter_on> 1 </matter_on>
-      <Q0> 2.0 </Q0>
+      <Q0> 1.0 </Q0>
       <T0> 0.16 </T0>
       <vir_factor> 0.25 </vir_factor>
       <in_vac> 1 </in_vac>
@@ -127,7 +124,7 @@
       <brick_med> 0 </brick_med>
       <brick_length> 5.0 </brick_length>
       <hydro_Tc> 0.16 </hydro_Tc>
-      <qhat0> -2.0 </qhat0>
+      <qhat0> 2.0 </qhat0>
       <alphas> 0.2 </alphas>
     </Matter>
 
@@ -137,29 +134,29 @@
       <in_vac> 0 </in_vac>
       <only_leading> 0 </only_leading>
       <hydro_Tc> 0.16 </hydro_Tc>
-      <alphas> 0.2 </alphas>
+      <qhat0> 2.0 </qhat0>
+      <alphas> 0.0 </alphas>
     </Lbt>
     
     <Martini>
       <name > Martini </name>
-      <Q0> 2.0 </Q0>
+      <Q0> 1.0 </Q0>
       <alpha_s> 0.3 </alpha_s>
       <pcut> 2.0 </pcut>
       <hydro_Tc> 0.16 </hydro_Tc>
-      <recoil_on> 0 </recoil_on>
       <path>../src/jet/Martini/</path>
     </Martini>
 
     <Tequila>
       <name> Tequila </name>
       <alpha_s> 0.3 </alpha_s>
-      <pcut> 2. </pcut>
+      <eLossCut> 2. </eLossCut>
       <Q0> 1.0 </Q0>
       <hydro_Tc> 0.16 </hydro_Tc>
       <recoil_on> 1 </recoil_on>
       <muomega_over_T> 1. </muomega_over_T>
       <muqperp_over_T> 1. </muqperp_over_T>
-      <path>../src/jet/Tequila/</path>
+      <tables_path>../src/jet/Tequila/</tables_path>
     </Tequila>
 
     <AdSCFT>
@@ -169,10 +166,8 @@
       <Q0> 2.0 </Q0>
       <in_vac> 0 </in_vac>
     </AdSCFT>
-
     
   </Eloss>
-
 
   <!--Preequilibrium Dynamics Module -->
   <Preequilibrium>
@@ -193,13 +188,11 @@
 
   <!-- Hydro  Module  -->
   <Hydro>
-    
-    <AddLiquefier> false </AddLiquefier>
 
     <!-- Test Brick if bjorken_expansion_on="true", T(t) = T * (start_time[fm]/t)^{1/3} -->
     <Brick bjorken_expansion_on="false" start_time="0.6">
       <name>Brick</name>
-      <T>0.2</T>
+      <T>0.3</T>
     </Brick>
 
     <!-- Test Gubser  -->
@@ -244,43 +237,17 @@
       <freezeout_temperature>-1</freezeout_temperature>
       <Perform_CooperFrye_Feezeout>0</Perform_CooperFrye_Feezeout>
     </MUSIC>
-
-    <!-- CLVisc  -->
-    <CLVisc>
-      <name>CLVisc</name>
-      <cpu_block_size>1</cpu_block_size>
-      <gpu_block_size>64</gpu_block_size>
-      <device_type>gpu</device_type>
-      <device_id> 0 </device_id>
-      <etaos_xmin> 0.15 </etaos_xmin>
-      <etaos_ymin> 0.08 </etaos_ymin>
-      <etaos_left_slop> 0.0 </etaos_left_slop>
-      <etaos_right_slop> 0.0 </etaos_right_slop>
-      <tau0> 0.6 </tau0>
-      <!-- *_skip is used to save less bulk data -->
-      <ntau_skip> 10 </ntau_skip>
-      <nx_skip> 2 </nx_skip>
-      <ny_skip> 2 </ny_skip>
-      <netas_skip> 2 </netas_skip>
-      <!-- scale_factor: scale the initial entropy/energy density -->
-      <scale_factor> 57 </scale_factor>
-      <dtau> 0.02 </dtau>
-      <result_directory>./</result_directory>
-      <Perform_CooperFrye_Feezeout>0</Perform_CooperFrye_Feezeout>
-    </CLVisc>
-
   </Hydro>
   
   <!-- Jet Hadronization Module -->
    <JetHadronization>
        <name>colored/colorless/hybrid</name>
        <take_recoil>1</take_recoil>
-       <eCMforHadronization>2510</eCMforHadronization>
+       <eCMforHadronization>100</eCMforHadronization>
        <reco_Elevelmax>3</reco_Elevelmax>
        <thermreco_distmax>5.0</thermreco_distmax>
        <shower_recofactor>0.3333333</shower_recofactor>
        <thermal_recofactor>0.3333333</thermal_recofactor>
-       <weak_decays>on</weak_decays>
    </JetHadronization>
 
   <!-- Particlization Module  -->
@@ -299,7 +266,7 @@
       <iSS_working_path>.</iSS_working_path>
       
       <number_of_repeated_sampling>1</number_of_repeated_sampling>
-      <Perform_resonance_decays>1</Perform_resonance_decays>
+      <Perform_resonance_decays>0</Perform_resonance_decays>
     </iSS>
   </SoftParticlization>
 
@@ -317,5 +284,4 @@
       <only_decays>0</only_decays>
     </SMASH>
   </Afterburner>
-
 </jetscape>

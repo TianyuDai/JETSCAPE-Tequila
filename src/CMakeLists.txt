@@ -64,7 +64,8 @@ endif()
 
 #jet
 FILE(GLOB jetsources jet/*.cc)
-set (SOURCES  ${SOURCES}  ${jetsources} )
+FILE(GLOB tequilasources jet/Tequila/*.cc)
+set (SOURCES  ${SOURCES}  ${jetsources} ${tequilasources} )
 
 #hadronization
 FILE(GLOB hadrosources hadronization/*.cc)
@@ -78,6 +79,10 @@ endif()
 #reader
 FILE(GLOB readersources reader/*.cc)
 set (SOURCES  ${SOURCES}  ${readersources} )
+
+#tools
+FILE(GLOB toolssources tools/*.cc)
+set (SOURCES  ${SOURCES}  ${toolssources} )
 
 
 #######################################

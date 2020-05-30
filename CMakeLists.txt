@@ -152,7 +152,9 @@ install(
   "${CMAKE_SOURCE_DIR}/src/hydro/"
   "${CMAKE_SOURCE_DIR}/src/afterburner/"
   "${CMAKE_SOURCE_DIR}/src/jet/"
+  "${CMAKE_SOURCE_DIR}/src/jet/Tequila"
   "${CMAKE_SOURCE_DIR}/src/reader/"
+  "${CMAKE_SOURCE_DIR}/src/tools/"
   # external packages
   "${CMAKE_SOURCE_DIR}/external_packages/"
   "${CMAKE_SOURCE_DIR}/external_packages/iSS/src/"
@@ -176,6 +178,7 @@ install(
   PATTERN "data_table" EXCLUDE
   PATTERN "LBT-tables" EXCLUDE
   PATTERN "Martini" EXCLUDE
+  PATTERN "Tequila" EXCLUDE
   PATTERN "googletest" EXCLUDE
   )
 
@@ -296,6 +299,8 @@ include_directories(./src/hydro )
 include_directories(./src/hadronization )
 include_directories(./src/afterburner )
 include_directories(./src/jet )
+include_directories(./src/jet/Tequila )
+include_directories(./src/tools )
 include_directories(./src/reader )
 include_directories(./external_packages/)
 include_directories(./external_packages/gtl/include )
@@ -397,6 +402,15 @@ target_link_libraries(FinalStateHadrons JetScape )
 add_executable(FinalStatePartons ./examples/FinalStatePartons.cc)
 target_link_libraries(FinalStatePartons JetScape )
 
+add_executable(final_partons ./Tequila_test/final_partons.cc)
+target_link_libraries(final_partons JetScape )
+
+add_executable(jet_cross_section ./Tequila_test/jet_cross_section.cc)
+target_link_libraries(jet_cross_section JetScape )
+
+add_executable(charged_hadron_cross_section ./Tequila_test/charged_hadron_cross_section.cc)
+target_link_libraries(charged_hadron_cross_section JetScape )
+
 # executables with additional dependencies
 if ( USE_MUSIC AND USE_ISS )
     target_link_libraries(runJetscape ${GSL_LIBRARIES})
@@ -435,7 +449,7 @@ if (USE_MUSIC)
     file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/EOS)
     file(COPY ${CMAKE_SOURCE_DIR}/external_packages/music/EOS/
       DESTINATION ${CMAKE_BINARY_DIR}/EOS)
-    file(COPY ${CMAKE_SOURCE_DIR}/examples/test_music_files/music_input
+    file(COPY ${CMAKE_SOURCE_DIR}/connfig/music_input
       DESTINATION ${CMAKE_BINARY_DIR})
   else()
     message(FATAL_ERROR "Error: Cannot find files for MUSIC.")

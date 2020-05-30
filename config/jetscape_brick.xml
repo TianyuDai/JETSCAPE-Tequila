@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<jetscape>
+  
+  <nEvents> 10000 </nEvents>
+  
+  <outputFilename>test_out</outputFilename>
+  <JetScapeWriterAscii> on </JetScapeWriterAscii>
+
+  <ReuseHydro> True </ReuseHydro>
+  <nReuseHydro> 100000 </nReuseHydro>
+  <Random>
+    <seed>1</seed>
+  </Random>
+
+  
+  <!-- Hard Process -->
+  <Hard>
+    <!--PythiaGun>
+      <pTHatMin>60</pTHatMin>
+      <pTHatMax>80</pTHatMax>
+      <eCM>200</eCM>
+      <FSR_on>0</FSR_on>
+    </PythiaGun-->
+    <PGun>
+      <name>PGun</name>
+      <pT>100</pT>
+      <parID>21</parID>
+      <useHybridHad>0</useHybridHad>
+    </PGun>
+  </Hard>
+  
+  <!-- Hydro  Module  -->
+  <Hydro>
+    <Brick bjorken_expansion_on="false" start_time="0.6">
+      <name>Brick</name>
+      <T>0.3</T>
+    </Brick>
+  </Hydro>
+  
+  <!--Eloss Modules -->
+  <Eloss>
+
+    <deltaT>0.01</deltaT>
+    <maxT>1.</maxT>
+
+    <!--Matter>
+      <in_vac> 1 </in_vac>
+      <Q0> 1.0 </Q0>
+    </Matter-->
+
+    <Tequila>
+      <name> Tequila </name>
+      <alpha_s> 0.3 </alpha_s>
+      <pcut> 2. </pcut>
+      <Q0> 1.0 </Q0>
+      <hydro_Tc> 0.16 </hydro_Tc>
+      <recoil_on> 1 </recoil_on>
+      <muomega_over_T> 2. </muomega_over_T>
+      <muqperp_over_T> 2. </muqperp_over_T>
+      <path>../src/jet/Tequila/</path>
+    </Tequila>
+
+  </Eloss>
+
+
+  <!-- Jet Hadronization Module -->
+  <!--JetHadronization>
+    <name>colorless</name>
+  </JetHadronization-->
+  
+</jetscape>

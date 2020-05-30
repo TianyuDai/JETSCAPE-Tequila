@@ -142,6 +142,19 @@ void JetScapeWriterStream<T>::Write(weak_ptr<PartonShower> ps) {
   if (!pShower)
     return;
 
+  PartonShower::node_iterator nIt,nEnd;
+  nIt = pShower->nodes_begin();
+  for (auto p : pShower->GetFinalPartons())
+  {
+    if (p->pstat() != -1)
+    {
+      WriteWhiteSpace("["+to_string(nIt->id())+"] P"); 
+      Write(p);
+      ++nIt;
+    }
+  }
+
+/*
   WriteComment(
       "Parton Shower in JetScape format to be used later by GTL graph:");
 
@@ -161,6 +174,7 @@ void JetScapeWriterStream<T>::Write(weak_ptr<PartonShower> ps) {
                     to_string(eIt->target().id()) + "] P");
     Write(pShower->GetParton(*eIt));
   }
+*/
 }
 
 template <class T> void JetScapeWriterStream<T>::Write(weak_ptr<Hadron> h) {

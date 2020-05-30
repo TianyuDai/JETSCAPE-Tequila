@@ -22,7 +22,7 @@ export DYLD_LIBRARY_PATH
 fi
 
 export BASEDIR=${HOME}
-export PYTHIAINSTALLDIR=/usr/local/Cellar
+export PYTHIAINSTALLDIR=/home/td115/lib/pythia8235
 
 export JetScape=${PWD}/lib
 export LD_LIBRARY_PATH=${JetScape}:${LD_LIBRARY_PATH}
@@ -43,6 +43,18 @@ export LD_LIBRARY_PATH=${ROOTSYS}/lib:${LD_LIBRARY_PATH}
 
 if [ -z ${TERM} -o -z ${SHELL} ]; then exit 0
 fi
+
+export EIGEN_INSTALL_DIR=/home/td115/lib/eigen-eigen-3.3.7
+export EIGEN3_ROOT=/home/td115/lib/eigen-eigen-3.3.7
+export GSL=$(gsl-config --prefix)
+export GSL_HOME=$(gsl-config --prefix)
+export GSL_ROOT_DIR=$(gsl-config --prefix)
+export JETSCAPE_DIR=`readlink -f .`
+export SMASH_DIR=${JETSCAPE_DIR}/external_packages/smash/smash_code
+export number_of_cores=`nproc --all`
+export CC=gcc
+export CXX=g++
+export OpenMP_CXX=g++
 
 echo ''
 echo 'Setup JetScape Library'
