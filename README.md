@@ -10,6 +10,14 @@ Please cite [The JETSCAPE framework](https://arxiv.org/abs/1903.07706) if you us
 
 Please see the [Installation Instructions](https://github.com/JETSCAPE/JETSCAPE/wiki/JETSCAPE-Installation).
 
+## Compilation
+Download external packages to enable hydro module: 
+`cd external_packages; bash get_music.sh ; bash get_freestream-milne.sh ; bash get_iSS.sh ; bash get_smash.sh`
+Build the project with hydro module turned on: 
+`mkdir  build; cd build; cmake -DUSE_MUSIC=ON -DUSE_ISS=ON -DUSE_SMASH=ON ..; make -j`
+If compiling on Nersc, remember to cmake with: 
+`-DHDF5_LIBRARIES=$CRAY_LD_LIBRARY_PATH`
+
 ## Running JETSCAPE
 
 The main executable to generate JETSCAPE events is `runJetscape`, located in the `build/` directory.
