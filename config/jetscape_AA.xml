@@ -1,10 +1,8 @@
-<?xml version="1.0"?>
-
 <jetscape>
   
   <nEvents> 10000 </nEvents>
   
-  <outputFilename>test_out</outputFilename>
+  <outputFilename updated="yes">/global/cscratch1/sd/td115/output/AuAu200/data_cut2_coef2/5.000000_i0.dat</outputFilename>
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
 
   <ReuseHydro> True </ReuseHydro>
@@ -13,12 +11,12 @@
     <seed>1</seed>
   </Random>
 
-  <!-- Inital State Module  -->
+  
   <IS>
-    <!-- x range [-grid_max_x, grid_max_x] -->
-    <!-- y range [-grid_max_y, grid_max_y]-->
-    <!-- longitudinal range [-grid_max_z, grid_max_z]-->
-    <!-- in units of [fm] -->
+    
+    
+    
+    
     <grid_max_x> 15 </grid_max_x>
     <grid_max_y> 15 </grid_max_y>
     <grid_max_z> 0.0 </grid_max_z>
@@ -27,71 +25,37 @@
     <grid_step_z> 0.3 </grid_step_z>
 
     <Trento> 
-                <PhysicsInputs  projectile='Au'
-                                                target='Au'
-                                                sqrts='200'
-                                                cross-section='4.2'
-                                                normalization='13.'>
+                <PhysicsInputs cross-section="4.2" normalization="13." projectile="Au" sqrts="200" target="Au">
                 </PhysicsInputs>
-                <CutInputs      centrality-low='10'
-                                        centrality-high='20'>
+                <CutInputs centrality-high="20" centrality-low="10">
                 </CutInputs>
-                <!--
-                                        centrality-high='100' b-min='5' b-max='5.01'>
-                'normalization':13.,
-                'reduced-thickness':0.1,
-                'fluctuation':0.9,
-                'nucleon-min-dist':0.4,
-                'cross-section':4.2, # in fermi
-                'nucleon-width':0.8,
-                'b-min':5,
-                'b-max':5.01,
-                'random-seed':1
-                -->
-                <TransInputs    reduced-thickness='0.1'
-                                                fluctuation="0.9"
-                                                nucleon-width="0.8"
-                                                nucleon-min-dist="0.4">
+                
+                <TransInputs fluctuation="0.9" nucleon-min-dist="0.4" nucleon-width="0.8" reduced-thickness="0.1">
                 </TransInputs>
-                <LongiInputs    mean-coeff="0.0"
-                                                std-coeff="100.0"
-                                                skew-coeff="0.0"
-                                                skew-type="1"
-                                                jacobian="0.8">
+                <LongiInputs jacobian="0.8" mean-coeff="0.0" skew-coeff="0.0" skew-type="1" std-coeff="100.0">
                 </LongiInputs>
 
 
     </Trento>
   </IS>
   
-  <!-- Hard Process -->
+  
   <Hard>
     <PythiaGun>
-      <pTHatMin>60</pTHatMin>
-      <pTHatMax>80</pTHatMax>
+      <pTHatMin updated="yes">5.0</pTHatMin>
+      <pTHatMax updated="yes">10.0</pTHatMax>
       <eCM>200</eCM>
       <FSR_on>0</FSR_on>
     </PythiaGun>
-    <!--PGun>
-      <name>PGun</name>
-      <pT>100</pT>
-      <parID>21</parID>
-      <useHybridHad>0</useHybridHad>
-    </PGun-->
   </Hard>
   
-  <!--Preequilibrium Dynamics Module -->
+  
   <Preequilibrium>
     <NullPreDynamics> </NullPreDynamics>
   </Preequilibrium>
   
-  <!-- Hydro  Module  -->
+  
   <Hydro>
-    <!--Brick bjorken_expansion_on="false" start_time="0.6">
-      <name>Brick</name>
-      <T>0.3</T>
-    </Brick-->
-    <!-- MUSIC-->
     <MUSIC>
       <name>MUSIC</name>
       <MUSIC_input_file>music_input</MUSIC_input_file>
@@ -102,7 +66,7 @@
     </MUSIC>
   </Hydro>
   
-  <!--Eloss Modules -->
+  
   <Eloss>
 
     <deltaT>0.01</deltaT>
@@ -112,15 +76,6 @@
       <in_vac> 1 </in_vac>
       <Q0> 1.0 </Q0>
     </Matter>
-    <!--Martini>
-      <name > Martini </name>
-      <Q0> 2.0 </Q0>
-      <alpha_s> 0.3 </alpha_s>
-      <pcut> 2.0 </pcut>
-      <hydro_Tc> 0.16 </hydro_Tc>
-      <recoil_on> 0 </recoil_on>
-      <path>../src/jet/Martini/</path>
-    </Martini-->
 
     <Tequila>
       <name> Tequila </name>
@@ -137,7 +92,7 @@
   </Eloss>
 
 
-  <!-- Jet Hadronization Module -->
+  
   <JetHadronization>
     <name>colorless</name>
   </JetHadronization>

@@ -411,6 +411,9 @@ target_link_libraries(jet_cross_section JetScape )
 add_executable(charged_hadron_cross_section ./Tequila_test/charged_hadron_cross_section.cc)
 target_link_libraries(charged_hadron_cross_section JetScape )
 
+add_executable(generate_tasks_list ./Tequila_test/generate_tasks_list.cc)
+target_link_libraries(generate_tasks_list JetScape )
+
 # executables with additional dependencies
 if ( USE_MUSIC AND USE_ISS )
     target_link_libraries(runJetscape ${GSL_LIBRARIES})
@@ -449,7 +452,7 @@ if (USE_MUSIC)
     file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/EOS)
     file(COPY ${CMAKE_SOURCE_DIR}/external_packages/music/EOS/
       DESTINATION ${CMAKE_BINARY_DIR}/EOS)
-    file(COPY ${CMAKE_SOURCE_DIR}/connfig/music_input
+    file(COPY ${CMAKE_SOURCE_DIR}/config/music_input
       DESTINATION ${CMAKE_BINARY_DIR})
   else()
     message(FATAL_ERROR "Error: Cannot find files for MUSIC.")
@@ -472,3 +475,7 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/external_packages/LBT-tables")
 else()
   message("Warning: LBT-tables have not been downloaded in external_packages by ./get_lbtTab.sh; LBT-brickTest will NOT run properly.")
 endif()
+
+#### copy wrapper files to build/    
+file(COPY ${CMAKE_SOURCE_DIR}/wrapper/AA_wrapper.py
+  DESTINATION ${CMAKE_SOURCE_DIR}/build)

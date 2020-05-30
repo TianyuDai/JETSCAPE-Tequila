@@ -1,0 +1,20 @@
+#!/bin/bash
+#SBATCH -n 48 -c 64
+
+#SBATCH --time=00:30:00
+
+#SBATCH --qos=debug
+
+#SBATCH --mail-type ALL
+#SBATCH --mail-user td115@duke.edu
+
+#SBATCH --constraint=haswell
+
+#SBATCH --output /global/cscratch1/sd/%u/slurm/%x-%j.out
+#SBATCH --error  /global/cscratch1/sd/%u/slurm/%x-%j.err
+
+export PATH=$PATH:/usr/common/tig/taskfarmer/1.5/bin:$(pwd)
+export THREADS=32
+
+cd /global/homes/t/td115/JETSCAPE3.0-Tequila/build
+runcommands.sh ../Nersc_submit/tasks_list_AA_event.txt
