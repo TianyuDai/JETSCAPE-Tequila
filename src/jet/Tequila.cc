@@ -2,7 +2,6 @@
 #include "IntTabulator.h"
 #include "JetScapeLogger.h"
 #include "JetScapeXML.h"
-#include <string>
 #include "tinyxml2.h"
 #include "Srandom.h"
 #include "FluidDynamics.h"
@@ -22,10 +21,6 @@
 #include "gsl/gsl_spline.h"
 #include "gsl/gsl_interp2d.h"
 #include "gsl/gsl_spline2d.h"
-// ofstream fout_elas("large_coupling_gg_dGamma_domega_elas_full"); 
-// ofstream fout("large_coupling_gg_dGamma_domega_elas"); 
-// ofstream fout("dGamma_domega_gg_split"); 
-// ofstream fout("final_particle"); 
 #define nB(k) 1./(exp(k)-1.)
 #define nF(k) 1./(exp(k)+1.)
 
@@ -33,6 +28,8 @@
 #define hbarc 0.197327053
 
 using namespace Jetscape;
+// ofstream frate("rate_gg.dat"); 
+
 Pythia8::Pythia Tequila::InternalHelperPythia ("IntentionallyEmpty",false);
 
 // Register the module with the base class
@@ -96,14 +93,15 @@ void Tequila::Init()
     recoil_on = GetXMLElementInt({"Eloss", "Tequila", "recoil_on"});
 
     muqperp_over_T = GetXMLElementDouble({"Eloss", "Tequila", "muqperp_over_T"});
-    muomega_over_T = GetXMLElementInt({"Eloss", "Tequila", "muomega_over_T"});
+    muomega_over_T = GetXMLElementDouble({"Eloss", "Tequila", "muomega_over_T"});
+    // qhat_coef = GetXMLElementDouble({"Eloss", "Tequila", "qhat_coef"});
 
     // Path to additional data
     path_to_tables = GetXMLElementText({"Eloss", "Tequila", "path"});
 
     g = sqrt(4.*M_PI*alpha_s); 
     const double alpha_EM=1./137.; //Not currently a parameter
-    hydro_tStart = 0.6; 
+    hydro_tStart = 0.4; 
     ZeroOneDistribution = uniform_real_distribution<double> { 0.0, 1.0 }; 
 	
     // Load elastic rate
@@ -128,32 +126,13 @@ void Tequila::Init()
 
 void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>& pIn, vector<Parton>& pOut)
 {
-    /*for (double w = 0.1; w < 100./0.3/2; w += 0.1)
-        fout << w*0.3/100 << "\n"; 
-    // double rate_gg_split = 0., Lambda = 6.; 
-    for (double w = 0.1; w < 100./0.3/2; w += 0.1)
+    /*
+    double dw = 0.0001; 
+    for (double w = elas_omega_over_T_pos_min; w < elas_omega_over_T_pos_max-2; w += dw)
     {
-       std::cout << w*0.3/100 << "\n"; 
-       // fout << w*0.3/100 << "\n"; 
-       // fout_split << w*0.3/100 << " " << splittingRateOmega(100., w*0.3/100., 0.3, gg_split) << "\n"; 
-        if (w < 100.) fout << w*0.3/100 << " " << Interpolator_dGamma_domega(w, gg)*pow(g, 4)/2 << "\n"; 
-        //else fout << w*0.3/100 << " " << splittingRateOmega(100., w*0.3/100., 0.3, gg_split) << "\n";
-        // rate_gg_split += splittingRateOmega(100., w*0.3/100., 0.3, gg_split)*0.0001*0.3; 
+            frate << w << " " << Interpolator_dGamma_domega(w, gg) << "\n"; 
     }
-    // std::cout << rate_gg_split << "\n";
-    for (double q = 1.; q <= 100; q+=0.001)
-        fout << q << " " << q*Interpolator_dGamma_domega_qperp2(0.01, q, gg) << "\n"; */
-    /*JSINFO << "dgamma/domega " << Interpolator_dGamma_domega(0.1, gg); 
-    JSINFO << "dgamma/domega split " << splittingRateOmega(100., 0.1*0.3/100., 0.3, gg_split); 
-    JSINFO << "qhat_L for quark, 20GeV: " << qhatpara(20., 0.3, 1);  
-    JSINFO << "qhat_L for gluon, 20GeV: " << qhatpara(20., 0.3, 21);  
-    JSINFO << "qhat_L for quark, 6GeV: " << qhatpara(6., 0.3, 1);  
-    JSINFO << "qhat for quark, 20GeV: " << qhatperp(20., 0.3, 1);  
-    JSINFO << "qhat for gluon, 20GeV: " << qhatperp(20., 0.3, 21);  
 */
-    // JSINFO << Interpolator_dGamma_domega(-1.e-4, gg) << " " << Interpolator_dGamma_domega(-2., gg) << " " << Interpolator_dGamma_domega(1.e-4, gg) << " " << Interpolator_dGamma_domega(2., gg); 
-    // JSINFO << Interpolator_dGamma_domega(-1.e-2, gg) << " " << Interpolator_dGamma_domega(-2., gg) << " " << Interpolator_dGamma_domega(1.e-2, gg) << " " << Interpolator_dGamma_domega(2., gg);
-    // JSINFO << Interpolator_dGamma_domega_qperp2(0.1, 225., gq);  
 
     VERBOSESHOWER(5)<< MAGENTA << "SentInPartons Signal received : "<<deltaT<<" "<<Q2<<" "<< pIn.size();
     int Id, IdNew=21;
@@ -195,19 +174,9 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
     {
         // Reject photons
         if (pIn[i].pid()==photonid)
-        {
-            VERBOSE(1) << BOLDYELLOW << " A photon was RECEIVED with px = " << pIn[i].px() << " from framework and sent back " ;
-
             continue;
-        }
         if (abs(pIn[i].pid()) > 3 && pIn[i].pid() != 21)
-        {
-            VERBOSE(1) << BOLDYELLOW << " A heavy quark was RECEIVED with px = " << pIn[i].px() << " from framework and sent back " ;
-
             continue;
-        }
-        // std::cout << "start of the event\n"; 
-
  
         Id = pIn[i].pid();
         pStat = pIn[i].pstat(); 
@@ -228,8 +197,10 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
         yy = pIn[i].x_in().y() + (Time-tt)*py/pAbs;
         zz = pIn[i].x_in().z() + (Time-tt)*pz/pAbs;
         eta = pIn[i].eta();
+
         // Extract fluid properties
         std::unique_ptr<FluidCellInfo> check_fluid_info_ptr;
+
         GetHydroCellSignal(Time, xx, yy, zz, check_fluid_info_ptr);
         VERBOSE(8) << MAGENTA << "Temperature from Brick (Signal) = " << check_fluid_info_ptr->temperature;
 
@@ -237,13 +208,11 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
         vy = check_fluid_info_ptr->vy;
         vz = check_fluid_info_ptr->vz;
         T = check_fluid_info_ptr->temperature;
-        // JSINFO << pIn[i].t() << " " << pIn[i].e() << " " << pIn[i].px() <<  " " << pIn[i].py() << " " << pIn[i].pz() << " " << T << " " << M; 
         static Pythia8::Pythia InternalHelperPythia;
         // Only accept low t particles
-        // JSINFO << "before Q0 test " << pIn[i].t() << " " << pVecRest.t() << " " << T << " " << Q0; 
         if (pIn[i].t() > Q0*Q0 + rounding_error || T < hydro_Tc) continue; 
         TakeResponsibilityFor ( pIn[i] ); // Generate error if another module already has responsibility.
-
+        
         pLabel = pIn[i].plabel();
         if(pLabel == 0) 
         {
@@ -274,35 +243,31 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
       	// Pass the address of deltaT to DetermineProcess, if deltaT is changed, the changed value could be passed back. Calculate xVec after passing back the real deltaT. 
       	// time step should be in the rest frame. 
         double deltaTRest = deltaT / gamma; 
-        Lambda = std::min({pRest, 2.*T*elas_omega_over_T_pos_max, 2.*sqrt(3.*pRest*T)*2.});
+        Lambda = std::min({pRest, 2.*T*elas_omega_over_T_pos_max, 2.*sqrt(3.*pRest*T), 2.*pcut});
+
         process_type process = DetermineProcess(pRest, T, deltaTRest, Id);
-        //if (process != none) JSINFO << "process is " << process; 
+        std::cout << "process is " << process << "\n"; 
 
       	xVec = FourVector( xx+px/pAbs*deltaT, yy+py/pAbs*deltaT, zz+pz/pAbs*deltaT, Time+deltaT );
         velocity_jet[0]=1.0;
         velocity_jet[1]=pIn[i].jet_v().x();
         velocity_jet[2]=pIn[i].jet_v().y();
         velocity_jet[3]=pIn[i].jet_v().z();
-
+        
         IntTabulator inttabulator;
         if (process == none)
       	    pVecRestNew = pVecRest;
       	else if (process == gg || process == gq || process == qg || process == qq || process == qqp || process == qqb)
       	{
       	    omega = Energy_Transfer(pRest, T, process); 
-            // std::cout << "omega " << omega << "\n"; 
 	    qperp = TransverseMomentum_Transfer(pRest, omega, T, process);
-            // std::cout << "qperp " << qperp << "\n"; 
 	    // qperp = 0.1;
             pVecRestNew = Momentum_Update(omega, qperp, T, pVecRest); 
-            // std::cout << pVecRest.t() - pVecRestNew.t() << " " << omega << "\n"; 
             pRestNew = pVecRestNew.t(); 
             if (recoil_on)
             {
                 qVec = FourVector(pVecRest.x()-pVecRestNew.x(), pVecRest.y()-pVecRestNew.y(), pVecRest.z()-pVecRestNew.z(), pVecRest.t()-pVecRestNew.t()); 
-                // JSINFO << "before get thermal " << qVec.t() << " " << qVec.x() << " " << qVec.y() << " " << qVec.z(); 
                 pVecThermalRest = getThermalVec(qVec, T, Id); 
-                // JSINFO << "after get thermal"; 
                 pVecRecoilRest = FourVector(qVec.x()+pVecThermalRest.x(), qVec.y()+pVecThermalRest.y(), qVec.z()+pVecThermalRest.z(), qVec.t()+pVecThermalRest.t()); 
                 pRecoilRest = pVecRecoilRest.t();
                 if (process == gg || process == qg) IdNew = 21; 
@@ -458,6 +423,7 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
         else pVecRestNew = pVecRest;
         // diffusion process
         // pVecRestNew = pVecRest; 
+        
         pVecRestNewest = Langevin_Update(deltaTRest / hbarc, T, pVecRestNew, Id);
         // pVecRestNewest = pVecRestNew;
         if (pVecRestNewest.t() > pcut)
@@ -514,6 +480,7 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
             }
  
         }
+        std::cout << "before return\n"; 
       	return; 
     }
 }
@@ -765,7 +732,7 @@ double Tequila::qhatpara(double E, double T, int id)
     double Minf = sqrt(pow(mD, 2)/2.); 
     double qpara_elas = std::pow(g*Minf, 2)*CR*T/(2.*M_PI)*log(1.+pow(muqperp_over_T*T/Minf, 2))/2.; 
     double qpara_inel = std::pow(g, 4)*CR*CA*std::pow(T, 3)*muomega_over_T*(2-ln2)/(4.*std::pow(M_PI, 3)); 
-    return (qpara_elas+qpara_inel)*0.5; 
+    return (qpara_elas+qpara_inel)*qhat_coef; 
 }
 
 double Tequila::qhatperp(double E, double T, int id)
@@ -777,7 +744,7 @@ double Tequila::qhatperp(double E, double T, int id)
     double mD = sqrt(std::pow(g*T, 2)*(nc/3. + nf/6.));
     double qperp_elas = std::pow(g*mD, 2) * CR * T / (2.*M_PI) * log(1.+pow(muqperp_over_T*T/mD, 2))/2.; 
     double qperp_inel = 0.;  
-    return (qperp_elas+qperp_inel)*0.5;
+    return (qperp_elas+qperp_inel)*qhat_coef;
 }
 
 FourVector Tequila::Langevin_Update(double dt, double T, FourVector pIn, int id)
@@ -873,6 +840,10 @@ double Tequila::Energy_Transfer(double pRest, double T, process_type process)
         // omega_over_T_test = elas_omega_over_T_min+ZeroOneDistribution(*GetMt19937Generator())*(Lambda/(2.*T)-elas_omega_over_T_min);
         // std::cout << elas_omega_over_T_min << " " << Lambda/2/T << " " << omega_over_T_test << "\n"; 
         rate_omega_test = Interpolator_dGamma_domega(omega_over_T_test, process); 
+        double Q = max(mu_min, omega_over_T_test*T); 
+        rate_omega_test *= pow(0.1185*log(Q_Z/Lambda_qcd)/log(Q/Lambda_qcd), 2)/alpha_s/alpha_s; 
+        max_rate *= pow(0.1185*log(Q_Z/Lambda_qcd)/log(Q/Lambda_qcd), 2)/alpha_s/alpha_s; 
+        std::cout << Q << " " <<  0.1185*log(Q_Z/Lambda_qcd)/log(Q/Lambda_qcd) << "\n"; 
         if (rate_omega_test > max_rate) JSWARN << "The sampled rate is larger than the maximum rate we assumed in elastic 1d part!! "<< omega_over_T_test << " " << elas_omega_over_T_pos_min << " process is " << process; 
         r = max_rate * ZeroOneDistribution(*GetMt19937Generator());
         // JSINFO << max_rate << " " << rate_omega_test; 
@@ -1411,7 +1382,7 @@ double Tequila::non_uniform_trapeze_weights(int position, int size_of_array, dou
 }
 
 //Returns T^2 dGamma/(dx domega d^2 qperp)
-double Tequila::differential_rate(const double p_over_T, const double omega_over_T, const double qperp_over_T, double *** differential_rate_p_omega_qperp) {
+double Tequila::differential_rate(const double p_over_T, const double omega_over_T, const double qperp_over_T, double *** differential_rate_p_omega_qperp, double T) {
 
 
 	//tri-linear interpolation
@@ -1462,7 +1433,8 @@ double Tequila::differential_rate(const double p_over_T, const double omega_over
 	const double v1=v10*(1-frac_omega_over_T)+v11*frac_omega_over_T;
 
 	double res=v0*(1-frac_p_over_T)+v1*frac_p_over_T;
-
+        double Q = max(omega_over_T*T, mu_min); 
+        res *= pow(alpha_QZ*log(Q_Z/Lambda_qcd)/log(Q/Lambda_qcd), 2)/pow(alpha_s, 2); 
 	return res;
 
 }
@@ -1541,7 +1513,7 @@ void Tequila::sample_dgamma_dwdq(double p, double T, double *** differential_rat
 		//const double q_over_T_test=sqrt(q_over_T_sqr);
 		const double q_over_T_test=0.0;  //let's use qperp/T=0 for now
 
-		double v = differential_rate(p_over_T, omega_over_T_test, q_over_T_test, differential_rate_p_omega_qperp);
+		double v = differential_rate(p_over_T, omega_over_T_test, q_over_T_test, differential_rate_p_omega_qperp, T);
 
 		//safety check: did we pick the maximum rate correctly??
 		if (v > max_rate) {

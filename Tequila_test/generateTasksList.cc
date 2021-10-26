@@ -28,7 +28,7 @@
 #define hbarc 0.197327053
 
 using namespace std;
-ofstream fout("../Nersc_submit/tasks_list_AA_event_cut20.txt"); 
+ofstream fout("tasks_list_AA_event.txt"); 
 
 using namespace Jetscape;
 
@@ -52,25 +52,32 @@ int main(int argc, char** argv)
     cout<<endl;
    
     vector <double> pTHatBin{5., 10., 20., 40., 60., 80., 100.};
-    vector <int> iTask{123, 151, 15, 187, 193, 229, 232, 245, 260, 282, 293, 310, 329, 349, 364, 380, 382, 391, 396, 413, 426, 428, 437, 43, 457, 458, 478, 480, 487, 521, 533, 549, 556, 572, 577, 579, 587, 595, 596, 596, 607, 609, 616, 633, 672, 675, 67, 697, 698, 711, 736, 744, 745, 754, 758, 761, 762, 765, 766, 775, 785, 787, 78, 791, 794, 799, 818, 819, 827, 829, 831, 840, 876, 877, 878, 87, 884, 889, 897, 912, 937}; 
+    vector <double> cut_list{1.}; 
+    vector <double> coef_list{1.}; 
 
     fout << "#!/usr/bin/env bash\n\n"; 
     for (size_t iBin = 0; iBin < pTHatBin.size()-1; iBin++)
     {
         double pTHatMin = pTHatBin[iBin]; 
         double pTHatMax = pTHatBin[iBin+1]; 
-        for (int i = 0; i < 100; i++)
-            fout << "cd /global/homes/t/td115/JETSCAPE3.0-Tequila/build && python3 AA_wrapper.py --task "+std::to_string(i)+" --pTHatMin "+std::to_string(pTHatMin)+" --pTHatMax "+std::to_string(pTHatMax) << "\n";  
-    }/*
+      for (size_t iCut = 0; iCut < cut_list.size(); iCut++)
+      {
+          double cut = cut_list[iCut]; 
+          double coef = coef_list[iCut]; 
+          for (int i = 0; i < 10; i++)
+              fout << "cd /home/td115/research/JETSCAPE3.0/JETSCAPE3.0-Tequila/build && python3 AA_wrapper.py --task "+std::to_string(i)+" --pTHatMin "+std::to_string(pTHatMin)+" --pTHatMax "+std::to_string(pTHatMax)+" --cut "+std::to_string(cut)+" --coef "+std::to_string(coef) << "\n";  
+      }
+    }
+/*
     for (size_t iBin = 0; iBin < pTHatBin.size()-1; iBin++)
     {
         double pTHatMin = pTHatBin[iBin]; 
         double pTHatMax = pTHatBin[iBin+1]; 
         for (int i = 0; i < 100; i++)
-            fout << "cd /global/homes/t/td115/JETSCAPE2.0-AAevent/JETSCAPE2.0-Tequila/build && ./pp_charged_hadron_cross_section --task "+std::to_string(i)+" --pTHatMin "+std::to_string(pTHatMin)+" --pTHatMax "+std::to_string(pTHatMax) << "\n";  
+            fout << "cd /global/homes/t/td115/JETSCAPE3.0-Tequila/build && ./chargedHadronCrossSection --task "+std::to_string(i)+" --pTHatMin "+std::to_string(pTHatMin)+" --pTHatMax "+std::to_string(pTHatMax) << "\n";  
     }
-  */
- 
+  
+ */
   INFO_NICE<<"Finished!"; 
   cout<<endl;
 

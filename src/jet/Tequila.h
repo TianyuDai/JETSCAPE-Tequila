@@ -31,6 +31,7 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
   	double alpha_EM;
   	double hydro_Tc;
   	double muomega_over_T;
+        double qhat_coef; 
 	double Lambda; 
         int recoil_on;
         double hydro_tStart; 
@@ -38,7 +39,12 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 
   	const double nc = 3.; 
 	const double ln2 = log(2); 
-        const double epsilon = 1e-8; 
+        const double epsilon = 1e-8;
+        const double mu_min = 2.; 
+        const double Lambda_qcd = 0.17; 
+        const double alpha_QZ = 0.1185; 
+        const double Q_Z = 90.2; 
+         
 
 	const int Nsteps = 500; 
 	const static size_t nElasProcess = 6; 
@@ -114,7 +120,7 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 	// fill member array "rate_p" by integrating the content of "differential_rate_p_omega_q"
 	void evaluate_integrated_rate(double omega_over_T_cutoff, double *** differential_rate_gqq_p_omega_qperp, double * rate_gqq_p, process_type process);
 
-	double differential_rate(const double p_over_T, const double omega_over_T, const double qperp_over_T, double *** differential_rate_p_omega_qperp);
+	double differential_rate(const double p_over_T, const double omega_over_T, const double qperp_over_T, double *** differential_rate_p_omega_qperp, double T);
 	double rate_inel(double energy, double temp, double * rate_p);
 	void sample_dgamma_dwdq(double p, double T, double *** differential_rate_p_omega_qperp, double &w, double &q, process_type process);
 	//educated guess on the highest value of the rate
@@ -122,8 +128,9 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 	double maximum_rate_p(double p_over_T, double *** differential_rate_p_omega_qperp)
         {
             //the collinear rate should presumably be maximum at qperp/T=0 and either omega/T=+/-omega_over_T_cut 
-            const double val1=2.*differential_rate(p_over_T,muomega_over_T,0,differential_rate_p_omega_qperp);
-            const double val2=2.*differential_rate(p_over_T,-1*muomega_over_T,0,differential_rate_p_omega_qperp);
+            //assume that the temperature is 0.3, might have some problem if the temperature is too different... 
+            const double val1=2.*differential_rate(p_over_T,muomega_over_T,0,differential_rate_p_omega_qperp, 0.3);
+            const double val2=2.*differential_rate(p_over_T,-1*muomega_over_T,0,differential_rate_p_omega_qperp, 0.3);
             return val1 > val2 ? val1 : val2;
 	};
 

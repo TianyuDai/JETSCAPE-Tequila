@@ -204,9 +204,9 @@ void TrentoInitial::InitTask() {
   double xymax = GetXMax(), dxy = GetXStep();
   double etamax = GetZMax(), deta = GetZStep();
 
-  auto random_seed = (*GetMt19937Generator())();
+  // auto random_seed = (*GetMt19937Generator())();
   //TEMPORARY FOR TESTING
-  //auto random_seed = 1;
+  auto random_seed = 1;
   //TEMPORARY
   JSINFO << "Random seed used for Trento " << random_seed;
 

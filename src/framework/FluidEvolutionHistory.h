@@ -19,6 +19,7 @@
 
 #include <vector>
 #include "FluidCellInfo.h"
+#include <stdexcept>
 #include "RealType.h"
 
 namespace Jetscape {

@@ -9,6 +9,8 @@
 *.*~
 html/*
 build/*
+build2/*
+build3/*
 external_packages/LBT*
 external_packages/iSS*
 external_packages/music*

@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH -n 12 -c 64
+#SBATCH -n 5 -c 64
 
 #SBATCH --time=01:00:00
 
-#SBATCH --qos=regular
+#SBATCH --qos=premium
 
 #SBATCH --mail-type ALL
 #SBATCH --mail-user td115@duke.edu
@@ -17,4 +17,4 @@ export PATH=$PATH:/usr/common/tig/taskfarmer/1.5/bin:$(pwd)
 export THREADS=32
 
 cd /global/homes/t/td115/JETSCAPE3.0-Tequila/build
-runcommands.sh tasks_list_AA_event.txt
+runcommands.sh tasks_list_AA_event_more.txt

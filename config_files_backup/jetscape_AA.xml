@@ -1,6 +1,6 @@
 <jetscape>
   
-  <nEvents> 10000 </nEvents>
+  <nEvents> 10 </nEvents>
   
   <outputFilename updated="yes">/global/cscratch1/sd/td115/output/AuAu200/data_cut2_coef2/5.000000_i33.dat</outputFilename>
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
@@ -11,7 +11,8 @@
     <seed>0</seed>
   </Random>
 
-  
+  <vlevel> 0 </vlevel> 
+ 
   <IS>
     
     
@@ -86,6 +87,7 @@
       <recoil_on> 1 </recoil_on>
       <muomega_over_T> 2. </muomega_over_T>
       <muqperp_over_T> 2. </muqperp_over_T>
+      <qhat_coef> 1. </qhat_coef>
       <path>../src/jet/Tequila/</path>
     </Tequila>
 

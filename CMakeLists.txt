@@ -393,26 +393,17 @@ add_executable(runJetscape ./examples/runJetscape.cc)
 target_link_libraries(runJetscape JetScape )
 
 ### Read Jetscape output
-add_executable(readerTest ./examples/readerTest.cc)
-target_link_libraries(readerTest JetScape )
+add_executable(finalPartons ./Tequila_test/finalPartons.cc)
+target_link_libraries(finalPartons JetScape )
 
-add_executable(FinalStateHadrons ./examples/FinalStateHadrons.cc)
-target_link_libraries(FinalStateHadrons JetScape )
+add_executable(jetCrossSection ./Tequila_test/jetCrossSection.cc)
+target_link_libraries(jetCrossSection JetScape )
 
-add_executable(FinalStatePartons ./examples/FinalStatePartons.cc)
-target_link_libraries(FinalStatePartons JetScape )
+add_executable(chargedHadronCrossSection ./Tequila_test/chargedHadronCrossSection.cc)
+target_link_libraries(chargedHadronCrossSection JetScape )
 
-add_executable(final_partons ./Tequila_test/final_partons.cc)
-target_link_libraries(final_partons JetScape )
-
-add_executable(jet_cross_section ./Tequila_test/jet_cross_section.cc)
-target_link_libraries(jet_cross_section JetScape )
-
-add_executable(charged_hadron_cross_section ./Tequila_test/charged_hadron_cross_section.cc)
-target_link_libraries(charged_hadron_cross_section JetScape )
-
-add_executable(generate_tasks_list ./Tequila_test/generate_tasks_list.cc)
-target_link_libraries(generate_tasks_list JetScape )
+add_executable(generateTasksList ./Tequila_test/generateTasksList.cc)
+target_link_libraries(generateTasksList JetScape )
 
 # executables with additional dependencies
 if ( USE_MUSIC AND USE_ISS )
@@ -478,4 +469,11 @@ endif()
 
 #### copy wrapper files to build/    
 file(COPY ${CMAKE_SOURCE_DIR}/wrapper/AA_wrapper.py
+  DESTINATION ${CMAKE_SOURCE_DIR}/build)
+
+file(COPY ${CMAKE_SOURCE_DIR}/wrapper/generate_AA_xml.py
+  DESTINATION ${CMAKE_SOURCE_DIR}/build)
+
+#### copy configuration files to build/    
+file(COPY ${CMAKE_SOURCE_DIR}/config/jetscape_AA.xml
   DESTINATION ${CMAKE_SOURCE_DIR}/build)
