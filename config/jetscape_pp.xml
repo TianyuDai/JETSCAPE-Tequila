@@ -2,7 +2,7 @@
   
   <nEvents> 10000 </nEvents>
   
-  <outputFilename updated="yes">/global/cscratch1/sd/td115/output/AuAu200/data_cut2_coef2/5.000000_i33.dat</outputFilename>
+  <outputFilename updated="yes">test_out</outputFilename>
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
 
   <Random>

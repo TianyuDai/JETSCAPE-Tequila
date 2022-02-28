@@ -63,8 +63,8 @@
   <!-- Hard Process -->
   <Hard>
     <PythiaGun>
-      <pTHatMin>60</pTHatMin>
-      <pTHatMax>80</pTHatMax>
+      <pTHatMin>5</pTHatMin>
+      <pTHatMax>10</pTHatMax>
       <eCM>200</eCM>
       <FSR_on>0</FSR_on>
     </PythiaGun>

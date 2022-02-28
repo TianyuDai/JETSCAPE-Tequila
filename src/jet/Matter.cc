@@ -249,7 +249,7 @@ void Matter::DoEnergyLoss(double deltaT, double time, double Q2,
   VERBOSE(8) << " qhat0 = " << qhat0 << " qhat = " << qhat;
 
   for (int i = 0; i < pIn.size(); i++) {
-
+    std::cout << "first t " << pIn[i].t() << "\n"; 
     // Reject photons
     if (pIn[i].pid() == photonid) {
       VERBOSE(1) << BOLDYELLOW
@@ -634,6 +634,7 @@ void Matter::DoEnergyLoss(double deltaT, double time, double Q2,
       Q0 = 1.0;
 
     //if (pIn[i].t() > QS + rounding_error)
+    std::cout << "second t " << pIn[i].t() << "\n"; 
     if (pIn[i].t() > Q0 * Q0 + rounding_error ||
         ((!in_vac) && now_temp <= T0 &&
          pIn[i].t() > QS * QS + rounding_error)) {

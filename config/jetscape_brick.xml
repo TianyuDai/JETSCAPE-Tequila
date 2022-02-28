@@ -2,9 +2,9 @@
 
 <jetscape>
   
-  <nEvents> 100 </nEvents>
+  <nEvents> 100000 </nEvents>
   
-  <outputFilename>test_out</outputFilename>
+  <outputFilename>/home/td115/research/Result/JETSCAPE3.0/STAT_test/brick/energy_loss/Tequila_100GeV_gluon_300MeV</outputFilename>
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
 
   <ReuseHydro> True </ReuseHydro>
@@ -36,7 +36,7 @@
   <Eloss>
 
     <deltaT>0.01</deltaT>
-    <maxT>0.1</maxT>
+    <maxT>1.</maxT>
 
     <!--Matter>
       <in_vac> 1 </in_vac>
