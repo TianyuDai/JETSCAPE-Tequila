@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+
+<jetscape>
+  
+  <nEvents> 40000 </nEvents>
+  <setReuseHydro> true </setReuseHydro>
+  <nReuseHydro> 200 </nReuseHydro>
+  
+  <JetScapeWriterAscii> on </JetScapeWriterAscii>
+  <outputFilename>PGun_hydro_LBT_parton</outputFilename>
+  <vlevel> 0 </vlevel>
+  <nEvents_printout> 1 </nEvents_printout>
+
+  <Random>
+    <seed>1</seed>
+  </Random>
+  <!-- Inital State Module  -->
+  <IS>
+    <initial_profile_path>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</initial_profile_path>
+  </IS>
+  
+  <!-- Hard Process -->
+  <Hard>
+
+    <!-- Parton Gun test with fixed pT and fixed IS pos = 0  -->
+    <PGun>
+      <name>PGun</name>
+      <pT>100</pT>
+      <parID>21</parID>
+      <useHybridHad>0</useHybridHad>
+    </PGun>
+
+    <!--PythiaGun>
+      <FSR_on>0</FSR_on>
+      <pTHatMin>60</pTHatMin>
+      <pTHatMax>80</pTHatMax>
+      <eCM>200</eCM>
+      <useHybridHad>0</useHybridHad>
+      <LinesToRead>
+	PDF:useHardNPDFA = on
+	PDF:useHardNPDFB = on
+        PDF:nPDFSetA = 1
+        PDF:nPDFSetB = 1
+      </LinesToRead>
+    </PythiaGun-->
+  </Hard>
+  
+  <!--Preequilibrium Dynamics Module -->
+  <Preequilibrium>
+    <NullPreDynamics> </NullPreDynamics>
+  </Preequilibrium>
+  
+  <!-- Hydro  Module  -->
+  <Hydro>
+    <hydro_from_file>
+      <name>Hydro from file </name>
+      <read_in_multiple_hydro>1</read_in_multiple_hydro>
+      <boost_invariant_> 1</boost_invariant_> 
+      <hydro_files_folder>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</hydro_files_folder>
+    </hydro_from_file>
+  </Hydro>
+  
+  <!--Eloss Modules -->
+  <Eloss>
+
+    <deltaT>0.1</deltaT>
+    <formTime> -0.1</formTime>
+    <maxT>250</maxT>
+    <tStart> 0.6 </tStart> <!-- Start time of jet quenching, proper time, fm/c   -->
+    <mutex>ON</mutex>
+
+    <Lbt>
+      <name> Lbt </name>
+      <Q0> 1.0 </Q0>
+      <in_vac> 0 </in_vac>
+      <only_leading> 0 </only_leading>
+      <hydro_Tc> 0.16 </hydro_Tc>
+      <alphas> 0.25 </alphas>
+    </Lbt>
+  </Eloss>
+  
+  <!-- Jet Hadronization Module -->
+  <!--JetHadronization>
+    <name>colorless</name>
+    <take_recoil>1</take_recoil>
+    <eCMforHadronization>100</eCMforHadronization>
+  </JetHadronization-->
+  
+</jetscape>

@@ -168,6 +168,7 @@ install(
   "${CMAKE_SOURCE_DIR}/src/hydro/"
   "${CMAKE_SOURCE_DIR}/src/afterburner/"
   "${CMAKE_SOURCE_DIR}/src/jet/"
+  "${CMAKE_SOURCE_DIR}/src/tools/"
   "${CMAKE_SOURCE_DIR}/src/reader/"
   # external packages
   "${CMAKE_SOURCE_DIR}/external_packages/"
@@ -194,6 +195,7 @@ install(
   PATTERN "data_table" EXCLUDE
   PATTERN "LBT-tables" EXCLUDE
   PATTERN "Martini" EXCLUDE
+  PATTERN "Tequila" EXCLUDE
   PATTERN "googletest" EXCLUDE
   )
 
@@ -261,12 +263,43 @@ find_package(Pythia8 REQUIRED)
 include_directories(${PYTHIA8_INCLUDE_DIR})
 Message(STATUS "Pythia8 Include dir : " ${PYTHIA8_INCLUDE_DIR})
 
+# message("Looking for HDF5 ...")
+# find_package(HDF5)
+# include_directories(${HDF5_INCLUDE_DIRS})
+# set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -DUSE_HDF5" )
+# set( _hdf5_libs ${HDF5_CXX_LIB} ${HDF5_C_LIB} ${ZLIB} ${HDF5_HL_LIBRARIES})
+# message(STATUS "HDF5 include dir and libs : ${HDF5_INCLUDE_DIRS} ${_hdf5_libs} ")
+
+# Find the HDF5 C++ library.  The CMake FindHDF5 module does not work reliably,
+# e.g. sometimes it links unnecessary libraries, other times it fails to include
+# libz.  The following works on all systems I have tested (Ubuntu, Fedora, Arch,
+# Cray Linux at NERSC, RHEL on OSG).
+
 message("Looking for HDF5 ...")
-find_package(HDF5 REQUIRED)
+message("${HDF5_ROOT}")
+# Read HDF5_ROOT either as a CMake option or environment variable.
+if(NOT HDF5_ROOT)
+  set(HDF5_ROOT $ENV{HDF5_ROOT})
+  set(HDF5_FOUND TRUE)
+endif()
+
+# If HDF5_ROOT was set, search for the header and libraries in that location,
+# otherwise try to extract the locations from the h5c++ compiler wrapper.
+  set(HDF5_INCLUDE_HINT "${HDF5_ROOT}/include")
+  set(HDF5_LIBRARY_HINT "${HDF5_ROOT}/lib")
+
+# Find all required HDF5 components.
+find_path(HDF5_INCLUDE_DIRS H5Cpp.h HINTS ${HDF5_INCLUDE_HINT})
+find_library(HDF5_CXX_LIB hdf5_cpp HINTS ${HDF5_LIBRARY_HINT})
+find_library(HDF5_C_LIB hdf5 HINTS ${HDF5_LIBRARY_HINT})
+find_library(ZLIB z)
+
+# Report HDF5 status and set relevant variables if found.
 include_directories(${HDF5_INCLUDE_DIRS})
 set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -DUSE_HDF5" )
 set( _hdf5_libs ${HDF5_CXX_LIB} ${HDF5_C_LIB} ${ZLIB} ${HDF5_HL_LIBRARIES})
 message(STATUS "HDF5 include dir and libs : ${HDF5_INCLUDE_DIRS} ${_hdf5_libs} ")
+
 
 ###########################
 ### Optional packages   ###
@@ -315,6 +348,7 @@ include_directories(./src/hydro )
 include_directories(./src/hadronization )
 include_directories(./src/afterburner )
 include_directories(./src/jet )
+include_directories(./src/tools )
 include_directories(./src/reader )
 include_directories(./external_packages/)
 include_directories(./external_packages/gtl/include )
@@ -428,6 +462,15 @@ target_link_libraries(FinalStateHadrons JetScape )
 
 add_executable(FinalStatePartons ./examples/FinalStatePartons.cc)
 target_link_libraries(FinalStatePartons JetScape )
+
+add_executable(FinalStateHadronJets ./examples/FinalStateHadronJets.cc)
+target_link_libraries(FinalStateHadronJets JetScape )
+
+add_executable(FinalStatePartonJets ./examples/FinalStatePartonJets.cc)
+target_link_libraries(FinalStatePartonJets JetScape )
+
+add_executable(pp_charged_hadron_cross_section ./examples/pp_charged_hadron_cross_section.cc)
+target_link_libraries(pp_charged_hadron_cross_section JetScape )
 
 # executables with additional dependencies
 if ( USE_IPGlasma )

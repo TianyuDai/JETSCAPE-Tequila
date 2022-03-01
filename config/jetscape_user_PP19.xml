@@ -2,17 +2,17 @@
 
 <jetscape>
   
-  <nEvents> 1000 </nEvents>
+  <nEvents> 1 </nEvents>
   
+  <JetScapeWriterAscii> on </JetScapeWriterAscii>
   <outputFilename>test_out</outputFilename>
-  <JetScapeWriterHepMC> on </JetScapeWriterHepMC>
   
   <!-- Hard Process -->
   <Hard>
     <PythiaGun>
-      <pTHatMin>235</pTHatMin>
-      <pTHatMax>1000</pTHatMax>
-      <eCM>5020</eCM>
+      <pTHatMin>1</pTHatMin>
+      <pTHatMax>1380</pTHatMax>
+      <eCM>2760</eCM>
     </PythiaGun>
   </Hard>
   
@@ -31,6 +31,8 @@
   <!-- Jet Hadronization Module -->
   <JetHadronization>
     <name>colorless</name>
+    <take_recoil>1</take_recoil>
+    <eCMforHadronization>1380</eCMforHadronization>
   </JetHadronization>
   
 </jetscape>

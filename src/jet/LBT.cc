@@ -887,6 +887,15 @@ void LBT::LBT0(int &n, double &ti) {
         qhatTP = (RTE2 - RTE1) * (PLen - E1) / (E2 - E1) + RTE1;
 
         qhatTP = qhatTP * Kfactor;
+        /*
+	const double Lambda = 0.2;
+	const double A = 0.130121, B = 2.89127, C = 0.242912, D = 12.9953;
+	if (KATTC0 == 21)
+		qhatTP = 42.*Ca* 2. / M_PI * pow(4.* M_PI/9, 2)* ((A*(log(PLen/Lambda) - log(B))/pow(log(PLen/Lambda), 2))+C*(log(PLen/T)-log(D))/pow(log(PLen*T/pow(Lambda, 2)), 2));
+	else
+		qhatTP = 42.*Cf* 2. / M_PI * pow(4.* M_PI/9, 2)* ((A*(log(PLen/Lambda) - log(B))/pow(log(PLen/Lambda), 2))+C*(log(PLen/T)-log(D))/pow(log(PLen*T/pow(Lambda, 2)), 2));
+        */
+        // JSINFO << PLen << " " << T << " " << qhatTP; 
 
         ////reset by hand for unit test
         ////              RTE=0.09747;

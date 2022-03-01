@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<jetscape>
+  
+  <nEvents> 100000 </nEvents>
+  <setReuseHydro> true </setReuseHydro>
+  <nReuseHydro> 100000 </nReuseHydro>
+  
+  <JetScapeWriterAscii> on </JetScapeWriterAscii>
+  <outputFilename>PGun_brick_LBT_parton_alpha0.25</outputFilename>
+  <vlevel> 0 </vlevel>
+  <nEvents_printout> 1 </nEvents_printout>
+
+  <Random>
+    <seed>1</seed>
+  </Random>
+  <!-- Inital State Module  -->
+  <IS>
+    <initial_profile_path>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</initial_profile_path>
+  </IS>
+  
+  <!-- Hard Process -->
+  <Hard>
+
+    <!-- Parton Gun test with fixed pT and fixed IS pos = 0  -->
+    <PGun>
+      <name>PGun</name>
+      <pT>100</pT>
+      <parID>21</parID>
+      <useHybridHad>0</useHybridHad>
+    </PGun>
+
+  </Hard>
+  
+  <!-- Hydro  Module  -->
+  <Hydro>
+    <Brick>
+      <name>Brick</name>
+      <T>0.3</T>
+    </Brick>
+  </Hydro>
+  
+  <!--Eloss Modules -->
+  <Eloss>
+
+    <deltaT>0.1</deltaT>
+    <formTime> -0.1</formTime>
+    <maxT>1</maxT>
+    <mutex>ON</mutex>
+
+    <Lbt>
+      <name> Lbt </name>
+      <Q0> 1.0 </Q0>
+      <in_vac> 0 </in_vac>
+      <only_leading> 0 </only_leading>
+      <hydro_Tc> 0.16 </hydro_Tc>
+      <alphas> 0.25 </alphas>
+    </Lbt>
+  </Eloss>
+  
+</jetscape>

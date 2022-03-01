@@ -64,7 +64,17 @@ int main(int argc, char** argv)
   auto reader = make_shared<JetScapeReaderAscii>(argv[1]);
   std::ofstream dist_output (argv[2]); //Format is SN, PID, E, Px, Py, Pz, Eta, Phi
   vector<shared_ptr<Hadron>> hadrons;
+
+  auto pdghelper = JetScapeParticleBase::InternalHelperPythia.particleData;
+
   int SN=0;
+
+// for (int i = 0; i < 10; i++)
+// {
+//   auto reader = make_shared<JetScapeReaderAscii>(std::string()+argv[1]+"_i"+std::to_string(i)+".dat");
+  
+
+  
   while (!reader->Finished())
   {
     reader->Next();
@@ -109,6 +119,11 @@ int main(int argc, char** argv)
 
       for (unsigned int i=0; i<hadrons.size(); i++)
       {
+        auto ID = hadrons[i].get()->pid(); 
+        auto charge = pdghelper.charge(ID); 
+        auto eta = hadrons[i].get()->eta(); 
+        if (fabs(eta) > 1. || charge == 0) continue;
+        
         dist_output << i
             << particleSeperator << hadrons[i].get()->pid()
             << particleSeperator << hadrons[i].get()->pstat()
@@ -116,18 +131,20 @@ int main(int argc, char** argv)
             << particleSeperator << hadrons[i].get()->px()
             << particleSeperator << hadrons[i].get()->py()
             << particleSeperator << hadrons[i].get()->pz();
-
+        
         // v2 drops eta and phi, so only include it for v1
+        
         if (!writeHeaderV2) {
             dist_output << particleSeperator << hadrons[i].get()->eta()
                 << particleSeperator << hadrons[i].get()->phi();
         }
-
+        
         // Finish up
         dist_output << "\n";
       }
     }
   }
+
   // Write the final cross section and error if requested by using header v2
   if (writeHeaderV2) {
     // NOTE: Needs consistent "\t" between all entries to simplify parsing later.
@@ -137,4 +154,8 @@ int main(int argc, char** argv)
         << "\n";
   }
   reader->Close();
+
+
+// }
+
 }

@@ -69,6 +69,10 @@ endif()
 FILE(GLOB jetsources jet/*.cc)
 set (SOURCES  ${SOURCES}  ${jetsources} )
 
+#tools
+FILE(GLOB toolssources tools/*.cc)
+set (SOURCES  ${SOURCES}  ${toolssources} )
+
 #hadronization
 FILE(GLOB hadrosources hadronization/*.cc)
 set (SOURCES  ${SOURCES}  ${hadrosources} )

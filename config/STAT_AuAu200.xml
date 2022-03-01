@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+
+<jetscape>
+  
+  <nEvents> 40000 </nEvents>
+  <setReuseHydro> true </setReuseHydro>
+  <nReuseHydro> 200 </nReuseHydro>
+  
+  <JetScapeWriterAscii> on </JetScapeWriterAscii>
+  <outputFilename>test_out</outputFilename>
+  <vlevel> 0 </vlevel>
+  <nEvents_printout> 1 </nEvents_printout>
+
+  <Random>
+    <seed>1</seed>
+  </Random>
+  <!-- Inital State Module  -->
+  <IS>
+    <initial_profile_path>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</initial_profile_path>
+  </IS>
+  
+  <!-- Hard Process -->
+  <Hard>
+    <PythiaGun>
+      <FSR_on>0</FSR_on>
+      <pTHatMin>60</pTHatMin>
+      <pTHatMax>80</pTHatMax>
+      <eCM>200</eCM>
+      <useHybridHad>0</useHybridHad>
+      <LinesToRead>
+	PDF:useHardNPDFA = on
+	PDF:useHardNPDFB = on
+        PDF:nPDFSetA = 1
+        PDF:nPDFSetB = 1
+      </LinesToRead>
+    </PythiaGun>
+  </Hard>
+  
+  <!--Preequilibrium Dynamics Module -->
+  <Preequilibrium>
+    <NullPreDynamics> </NullPreDynamics>
+  </Preequilibrium>
+  
+  <!-- Hydro  Module  -->
+  <Hydro>
+
+    <!-- Test Brick if bjorken_expansion_on="true", T(t) = T * (start_time[fm]/t)^{1/3} -->
+    <!--Brick>
+      <name>Brick</name>
+      <T>0.3</T>
+    </Brick-->
+
+    <hydro_from_file>
+      <name>Hydro from file </name>
+      <read_in_multiple_hydro>1</read_in_multiple_hydro>
+      <boost_invariant_> 1</boost_invariant_> 
+      <hydro_files_folder>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</hydro_files_folder>
+    </hydro_from_file>
+  </Hydro>
+  
+  <!--Eloss Modules -->
+  <Eloss>
+
+    <deltaT>0.1</deltaT>
+    <formTime> -0.1</formTime>
+    <maxT>250</maxT>
+    <tStart> 0.6 </tStart> <!-- Start time of jet quenching, proper time, fm/c   -->
+    <mutex>ON</mutex>
+
+    <Matter>
+      <name>Matter</name>
+      <useHybridHad>0</useHybridHad>
+      <matter_on> 1 </matter_on>
+      <Q0> 2.0 </Q0>      <!-- Switching virtuality from MATTER to other module -->
+      <T0> 0.16 </T0>
+      <vir_factor> 0.25 </vir_factor>
+      <in_vac> 1 </in_vac>
+      <recoil_on> 0 </recoil_on>
+      <broadening_on> 0 </broadening_on>
+      <brick_med> 0 </brick_med>   <!-- Set brick_med to 1 while using Brick Hydro module-->
+      <brick_length> 5.0 </brick_length>
+      <hydro_Tc> 0.16 </hydro_Tc>
+      <qhat0> -2.0 </qhat0>  <!-- set qhat0 as negative if using alphas-->
+      <alphas> 0.35 </alphas>
+    </Matter>
+
+    <!--Martini>
+      <name > Martini </name>
+      <Q0> 1.0 </Q0>
+      <alphas> 0.25 </alphas>
+      <pcut> 2.0 </pcut>
+      <hydro_Tc> 0.16 </hydro_Tc>
+      <recoil_on> 0 </recoil_on>
+      <path>../src/jet/Martini/</path>
+    </Martini-->
+
+    <Lbt>
+      <name> Lbt </name>
+      <Q0> 2.0 </Q0>
+      <in_vac> 0 </in_vac>
+      <only_leading> 0 </only_leading>
+      <hydro_Tc> 0.16 </hydro_Tc>
+      <alphas> 0.35 </alphas>
+    </Lbt>
+  </Eloss>
+  
+  <!-- Jet Hadronization Module -->
+  <JetHadronization>
+    <name>colorless</name>
+    <take_recoil>1</take_recoil>
+    <eCMforHadronization>100</eCMforHadronization>
+  </JetHadronization>
+  
+</jetscape>
