@@ -469,9 +469,6 @@ target_link_libraries(FinalStateHadronJets JetScape )
 add_executable(FinalStatePartonJets ./examples/FinalStatePartonJets.cc)
 target_link_libraries(FinalStatePartonJets JetScape )
 
-add_executable(pp_charged_hadron_cross_section ./examples/pp_charged_hadron_cross_section.cc)
-target_link_libraries(pp_charged_hadron_cross_section JetScape )
-
 # executables with additional dependencies
 if ( USE_IPGlasma )
     target_link_libraries(runJetscape ${GSL_LIBRARIES})
