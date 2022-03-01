@@ -518,6 +518,16 @@ void JetScape::DetermineTaskListFromXML() {
                       "to Eloss list.";
           }
         }
+        //   - Tequila
+        else if (childElementName == "Tequila") {
+          auto tequila =
+              JetScapeModuleFactory::createInstance(childElementName);
+          if (tequila) {
+            jloss->Add(tequila);
+            JSINFO << "JetScape::DetermineTaskList() -- Eloss: Added Tequila "
+                      "to Eloss list.";
+          }
+        }
         //   - AdS/CFT
         else if (childElementName == "AdSCFT") {
           auto adscft = JetScapeModuleFactory::createInstance(childElementName);

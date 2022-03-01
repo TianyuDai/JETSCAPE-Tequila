@@ -10,10 +10,14 @@
 .DS_Store
 html/*
 build/*
+build2/*
+build3/*
+build4/*
 config_files/*
 external_packages/LBT*
 external_packages/iSS*
 external_packages/music*
+external_packages/PyVisc/
 examples/test_hydro_files/
 external_packages/freestream-milne/
 external_packages/smash/smash_code/

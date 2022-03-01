@@ -168,6 +168,7 @@ install(
   "${CMAKE_SOURCE_DIR}/src/hydro/"
   "${CMAKE_SOURCE_DIR}/src/afterburner/"
   "${CMAKE_SOURCE_DIR}/src/jet/"
+  "${CMAKE_SOURCE_DIR}/src/jet/Tequila"
   "${CMAKE_SOURCE_DIR}/src/tools/"
   "${CMAKE_SOURCE_DIR}/src/reader/"
   # external packages
@@ -348,6 +349,7 @@ include_directories(./src/hydro )
 include_directories(./src/hadronization )
 include_directories(./src/afterburner )
 include_directories(./src/jet )
+include_directories(./src/jet/Tequila )
 include_directories(./src/tools )
 include_directories(./src/reader )
 include_directories(./external_packages/)

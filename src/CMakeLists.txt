@@ -69,6 +69,10 @@ endif()
 FILE(GLOB jetsources jet/*.cc)
 set (SOURCES  ${SOURCES}  ${jetsources} )
 
+#Tequila
+FILE(GLOB tequilasources jet/Tequila/*.cc)
+set (SOURCES  ${SOURCES}  ${jetsources} ${tequilasources})
+
 #tools
 FILE(GLOB toolssources tools/*.cc)
 set (SOURCES  ${SOURCES}  ${toolssources} )
