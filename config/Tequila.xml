@@ -2,12 +2,12 @@
 
 <jetscape>
   
-  <nEvents> 1 </nEvents>
+  <nEvents> 100000 </nEvents>
   <setReuseHydro> true </setReuseHydro>
   <nReuseHydro> 100000 </nReuseHydro>
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
-  <outputFilename>Tequila_test</outputFilename>
+  <outputFilename>Tequila_gluon_1fm_elas</outputFilename>
   <vlevel> 0 </vlevel>
   <nEvents_printout> 1 </nEvents_printout>
 
@@ -41,7 +41,7 @@
 
     <deltaT>0.01</deltaT>
     <formTime> -0.1</formTime>
-    <maxT>0.01</maxT>
+    <maxT>1</maxT>
     <mutex>ON</mutex>
 
   
