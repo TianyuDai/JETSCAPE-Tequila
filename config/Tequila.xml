@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<jetscape>
+  
+  <nEvents> 1 </nEvents>
+  <setReuseHydro> true </setReuseHydro>
+  <nReuseHydro> 100000 </nReuseHydro>
+  
+  <JetScapeWriterAscii> on </JetScapeWriterAscii>
+  <outputFilename>Tequila_test</outputFilename>
+  <vlevel> 0 </vlevel>
+  <nEvents_printout> 1 </nEvents_printout>
+
+  <Random>
+    <seed>1</seed>
+  </Random>
+  
+  <!-- Hard Process -->
+  <Hard>
+
+    <!-- Parton Gun test with fixed pT and fixed IS pos = 0  -->
+    <PGun>
+      <name>PGun</name>
+      <pT>100</pT>
+      <parID>21</parID>
+      <useHybridHad>0</useHybridHad>
+    </PGun>
+
+  </Hard>
+  
+  <!-- Hydro  Module  -->
+  <Hydro>
+    <Brick>
+      <name>Brick</name>
+      <T>0.3</T>
+    </Brick>
+  </Hydro>
+  
+  <!--Eloss Modules -->
+  <Eloss>
+
+    <deltaT>0.01</deltaT>
+    <formTime> -0.1</formTime>
+    <maxT>0.01</maxT>
+    <mutex>ON</mutex>
+
+  
+    <Tequila>
+      <name> Tequila </name>
+      <alpha_s> 0.3 </alpha_s>
+      <pcut> 2. </pcut>
+      <Q0> 1.0 </Q0>
+      <hydro_Tc> 0.16 </hydro_Tc>
+      <recoil_on> 1 </recoil_on>
+      <muomega_over_T> 1. </muomega_over_T>
+      <muqperp_over_T> 1. </muqperp_over_T>
+      <qhat_coef> 1. </qhat_coef>
+      <path>../src/jet/Tequila/</path>
+    </Tequila>
+
+  </Eloss>
+</jetscape>
