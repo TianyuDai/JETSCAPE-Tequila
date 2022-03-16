@@ -47,8 +47,12 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
          
 
 	const int Nsteps = 500; 
-	const static size_t nElasProcess = 6; 
-	const static size_t nTotalProcess = 18; 
+	const static size_t nElasProcess = 6;
+        const static size_t nConvProcess = 4;
+        const static size_t nSplitProcess = 8;
+        const static size_t nInelProcess = 3;
+        const static size_t nTotalProcess = nElasProcess + nConvProcess + nSplitProcess + nInelProcess + 1; 
+	// const static size_t nTotalProcess = 18; 
 	
 	int iqperp0 = 0; 
 	double max_omega_rate; 
@@ -56,20 +60,22 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 	double casimir[nElasProcess] = {CA*CA/(24.*M_PI), dF*CF*CA/dA/(8.*M_PI), CF*CA/(24.*M_PI), dF*CF*CF/dA/(72.*M_PI), dF*CF*CF/dA/(18.*M_PI), dF*CF*CF/dA/(72.*M_PI)};		// The coefficient for total rate integration of large omega
 
 	// gg, gq, qg, qq, qqp, qqb
-	// const static size_t nSplittingProcess = 9; 
 	// There are two more processes in splitting approximation than large-angle elastic interaction
-	double splitting_c_lambda[nElasProcess+2] = {4.*CA*CA/96, 4.*CA/64, 0., 4.*CF*CA/96, 8.*CF/768, 4.*CF/96, 4.*CF/384, 0.}; 
-	double splitting_c_p[nElasProcess+2] = {5./6*CA*CA/96, (CF/2-CA)/64, (-1.*CF-1./3*CA)/32, (CF*CF/2-CF*CA)/96, -2.*CF/768, -1.*CF/96, CF*(6.*CF-3.*CA-1./3)/384, CF/288}; 
-	double splitting_c_ln[nElasProcess+2] = {-2.*CA*CA/96, (CF-2.*CA)/64, CF/32, (CF*CF-2.*CF*CA)/96, 4.*CF*(2.*CF-CA-1.)/768, -2.*CF/96, -2.*CF*(2.*CF-CA+1.)/384, 0.}; 
+        double splitting_c_lambda[nSplitProcess] = {4.*CA*CA, 16.*CA*2.*nf, 4.*CF*CA, 16.*CF, 16.*CF*(2.*nf-2.), 16.*CF, 0., 0.};
+        double splitting_c_p[nSplitProcess] = {5./6*CA*CA, 2.*nf*(2.*CF-4.*CA), CF*CF/2-CF*CA, -4.*CF, -4.*CF*(2.*nf-2), 4.*CF*(6.*CF-3.*CA-1./3), nf*(-CA/3-CF), -8.*CF/3*(CA+3.*CF)};
+        double splitting_c_ln[nSplitProcess] = {-2.*CA*CA, 2.*nf*(4.*CF-8.*CA), CF*CF-2.*CF*CA, 8.*CF*(2.*CF-CA-1.), -8.*CF*(2.*nf-2.), -8.*CF*(2.*CF-CA+1.), nf*CF, 8.*CF};
+        double Toverp_c_ln[nElasProcess+nConvProcess] = {-2.*CA*CA, -CA*CA, -2.*CF*CA, CF*(2.*CF-CA-1.), -CF, -CF*(2.*CF-CA+1.), -2.*nf*CF*CF/2, -CF*CF, -2.*nf*CF*CF, -CF*CF/2};
+
 	struct tables
 	{
 		double total_rate[2][Nw]; 
+		double total_rate_w[2][Nw]; 
 		double x[Nw+2], y[Nw+1]={0.}; 
 		double xa[Nw+2], ya[Nq+1]; 
 		double rate_qperp2[Nw+2][Nq+1];  
 	}; 
 	vector <tables> elasticTable; 
-	double *za = (double*) malloc(nElasProcess * (Nw+2) * (Nq+1) * sizeof(double)); 
+	double *za = (double*) malloc((nElasProcess+nConvProcess) * (Nw+2) * (Nq+1) * sizeof(double)); 
 
 	bool is_empty(std::ifstream& pFile); 
 	bool is_exist (const std::string& name); 
@@ -144,6 +150,7 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 
   	void LoadElasticTables(); 
         double interpolatorElasticTotalRate(double T, process_type process); 
+        double interpolatorElasticEnergyLoss(double T, process_type process); 
 	double Interpolator_dGamma_domega(double omega, process_type process); 
 	double Extrapolator_dGamma_domega(double omega, process_type process); 
 	double Interpolator_dGamma_domega_qperp2(double omega, double qperp2, process_type process); 

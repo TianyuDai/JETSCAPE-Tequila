@@ -13,6 +13,7 @@ build/*
 build2/*
 build3/*
 build4/*
+Tequila2/*
 config_files/*
 external_packages/LBT*
 external_packages/iSS*
