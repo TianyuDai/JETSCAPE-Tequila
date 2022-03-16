@@ -48,14 +48,17 @@
     <maxT>1</maxT>
     <mutex>ON</mutex>
 
-    <Lbt>
-      <name> Lbt </name>
+    <Tequila>
+      <name > Tequila </name>
       <Q0> 1.0 </Q0>
-      <in_vac> 0 </in_vac>
-      <only_leading> 0 </only_leading>
+      <alphas> 0.3 </alphas>
+      <pcut> 2.0 </pcut>
       <hydro_Tc> 0.16 </hydro_Tc>
-      <alphas> 0.25 </alphas>
-    </Lbt>
-  </Eloss>
-  
+      <recoil_on> 0 </recoil_on>
+      <muomega_over_T> 1. </muomega_over_T>
+      <muqperp_over_T> 1. </muqperp_over_T>
+      <qhat_coef> 1. </qhat_coef>
+      <path>../src/jet/Tequila/</path>
+    </Tequila>
+
 </jetscape>

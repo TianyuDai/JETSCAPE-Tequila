@@ -160,6 +160,19 @@
       <in_vac> 0 </in_vac>
     </AdSCFT>
     
+    <Tequila>
+      <name > Tequila </name>
+      <Q0> 1.0 </Q0>
+      <alphas> 0.3 </alphas>
+      <pcut> 2.0 </pcut>
+      <hydro_Tc> 0.16 </hydro_Tc>
+      <recoil_on> 0 </recoil_on>
+      <muomega_over_T> 1. </muomega_over_T>
+      <muqperp_over_T> 1. </muqperp_over_T>
+      <qhat_coef> 1. </qhat_coef>
+      <path>../src/jet/Tequila/</path>
+    </Tequila>
+
   </Eloss>
 
   <!--Preequilibrium Dynamics Module -->
