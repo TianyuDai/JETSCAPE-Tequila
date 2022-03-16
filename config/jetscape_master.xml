@@ -152,6 +152,18 @@
       <path>../src/jet/Martini/</path>
     </Martini>
 
+    <Tequila>
+      <name> Tequila </name>
+      <alpha_s> 0.3 </alpha_s>
+      <pcut> 2. </pcut>
+      <Q0> 1.0 </Q0>
+      <hydro_Tc> 0.16 </hydro_Tc>
+      <recoil_on> 1 </recoil_on>
+      <muomega_over_T> 1. </muomega_over_T>
+      <muqperp_over_T> 1. </muqperp_over_T>
+      <path>../src/jet/Tequila/</path>
+    </Tequila>
+
     <AdSCFT>
       <name> AdSCFT </name>
       <kappa> 0.36 </kappa>

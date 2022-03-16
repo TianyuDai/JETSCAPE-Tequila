@@ -78,6 +78,23 @@ void IntTabulator::Tabulator_dGamma_domega_qperp2(std::string path, process_type
     }
 }
 
+void IntTabulator::Tabulator_omega_dGamma_domega_qperp2(std::string path, process_type process)
+{
+    std::ofstream table2dw_out((path+"elastic_rate_table"+GetProcessString(process)+"for_wdGdw.dat").c_str()); 
+    double wp, w, q, qp; 
+    // flat tabulation (not log) is enough for integration of wdGdw
+    for (size_t i = 0; i <= Nw; i++)
+    {
+        w = ((double)i)*(elas_omega_over_T_pos_max-elas_omega_over_T_neg_min)/Nw+elas_omega_over_T_neg_min; 
+	for (size_t j = 0; j <= Nq; j++)
+	{
+            q = ((double)j)*(elas_qperp_over_T_max-muqperp_over_T_0)/Nq+muqperp_over_T_0; 
+	    table2dw_out << dGamma_domega_qperp2_forTab(w, q, process) << " "; 
+	}
+        table2dw_out << "\n"; 
+    }
+}
+
 double dGamma_domega_qperp2_k(double k, void *params)
 {	
 	struct f_params *p = (struct f_params *)params; 
@@ -97,6 +114,14 @@ double dGamma_domega_qperp2_k(double k, void *params)
 		case qqp: F.function = dGamma_domega_qperp2_k_phi_qqp; 
 			 break; 
 		case qqb: F.function = dGamma_domega_qperp2_k_phi_qqb; 
+			 break; 
+		case GqQg: F.function = dGamma_domega_qperp2_k_phi_GqQg; 
+			 break; 
+		case QgGq: F.function = dGamma_domega_qperp2_k_phi_QgGq; 
+			 break; 
+		case GgQbq: F.function = dGamma_domega_qperp2_k_phi_GgQbq; 
+			 break; 
+		case QbqGg: F.function = dGamma_domega_qperp2_k_phi_QbqGg; 
 			 break; 
 		default: std::cout << "The process determination is wrong! The process is " << p->f_process; 
 			 break; 
@@ -224,3 +249,79 @@ double dGamma_domega_qperp2_k_phi_qqb(double phi, void *params)
 	return C*M2; 
 }
 
+double dGamma_domega_qperp2_k_phi_GqQg(double phi, void *params)
+{
+	struct f_params *p = (struct f_params *)params; 
+	IntTabulator cls; 
+	double s, t, u, M2, C; 
+	double q, k, kp, qperp2, omega; 
+	qperp2 = p->f_qperp2; 
+	k = p->f_k; 
+	omega = p->f_omega;  
+	kp = k + omega; 
+	q = sqrt(qperp2 + omega*omega); 
+	t = -1.*qperp2; 
+	s = (-1.*t/(2*q*q))*((k+kp)-cos(phi)*sqrt(4*k*kp+t)); 
+	u = -1.*s; 
+	C = 1./4./pow(2.*M_PI, 3)/q/2; 
+        // For conversion process, we neglect T/p here. The additional factor of 1/2 comes from 2p/4p^2. There should be a factor of 2p in s, so for large-angle interactions, the term is s^2, which makes the factor be canceled. 
+	M2 = (double)(CF*CF)*2.*u/t*(2.*nF(k)*(1+nB(k+omega)))/2.*2.*Nf; 
+	return C*M2; 
+}
+
+double dGamma_domega_qperp2_k_phi_QgGq(double phi, void *params)
+{
+	struct f_params *p = (struct f_params *)params; 
+	IntTabulator cls; 
+	double s, t, u, M2, C; 
+	double q, k, kp, qperp2, omega; 
+	qperp2 = p->f_qperp2; 
+	k = p->f_k; 
+	omega = p->f_omega;  
+	kp = k + omega; 
+	q = sqrt(qperp2 + omega*omega); 
+	t = -1.*qperp2; 
+	s = (-1.*t/(2*q*q))*((k+kp)-cos(phi)*sqrt(4*k*kp+t)); 
+	u = -1.*s; 
+	C = 1./4./pow(2.*M_PI, 3)/q/2; 
+	M2 = (double)(CF*CF)*2.*u/t*(2.*nB(k)*(1-nF(k+omega)))/2.; 
+	return C*M2; 
+}
+
+double dGamma_domega_qperp2_k_phi_GgQbq(double phi, void *params)
+{
+	struct f_params *p = (struct f_params *)params; 
+	IntTabulator cls; 
+	double s, t, u, M2, C; 
+	double q, k, kp, qperp2, omega; 
+	qperp2 = p->f_qperp2; 
+	k = p->f_k; 
+	omega = p->f_omega;  
+	kp = k + omega; 
+	q = sqrt(qperp2 + omega*omega); 
+	t = -1.*qperp2; 
+	s = (-1.*t/(2*q*q))*((k+kp)-cos(phi)*sqrt(4*k*kp+t)); 
+	u = -1.*s; 
+	C = 1./4./pow(2.*M_PI, 3)/q/2; 
+	M2 = (double)(CF*CF)*2.*u/t*(2.*nB(k)*(1-nF(k+omega)))/2.*2.*Nf; 
+	return C*M2; 
+}
+
+double dGamma_domega_qperp2_k_phi_QbqGg(double phi, void *params)
+{
+	struct f_params *p = (struct f_params *)params; 
+	IntTabulator cls; 
+	double s, t, u, M2, C; 
+	double q, k, kp, qperp2, omega; 
+	qperp2 = p->f_qperp2; 
+	k = p->f_k; 
+	omega = p->f_omega;  
+	kp = k + omega; 
+	q = sqrt(qperp2 + omega*omega); 
+	t = -1.*qperp2; 
+	s = (-1.*t/(2*q*q))*((k+kp)-cos(phi)*sqrt(4*k*kp+t)); 
+	u = -1.*s; 
+	C = 1./4./pow(2.*M_PI, 3)/q/2; 
+	M2 = (double)(CF*CF)*2.*u/t*(2.*nF(k)*(1+nB(k+omega)))/2.; 
+	return C*M2; 
+}

@@ -28,7 +28,6 @@
 #define hbarc 0.197327053
 
 using namespace Jetscape;
-// ofstream frate("rate_gg.dat"); 
 
 Pythia8::Pythia Tequila::InternalHelperPythia ("IntentionallyEmpty",false);
 
@@ -126,13 +125,6 @@ void Tequila::Init()
 
 void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>& pIn, vector<Parton>& pOut)
 {
-    /*
-    double dw = 0.0001; 
-    for (double w = elas_omega_over_T_pos_min; w < elas_omega_over_T_pos_max-2; w += dw)
-    {
-            frate << w << " " << Interpolator_dGamma_domega(w, gg) << "\n"; 
-    }
-*/
 
     VERBOSESHOWER(5)<< MAGENTA << "SentInPartons Signal received : "<<deltaT<<" "<<Q2<<" "<< pIn.size();
     int Id, IdNew=21;
@@ -246,7 +238,6 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
         Lambda = std::min({pRest, 2.*T*elas_omega_over_T_pos_max, 2.*sqrt(3.*pRest*T), 2.*pcut});
 
         process_type process = DetermineProcess(pRest, T, deltaTRest, Id);
-        std::cout << "process is " << process << "\n"; 
 
       	xVec = FourVector( xx+px/pAbs*deltaT, yy+py/pAbs*deltaT, zz+pz/pAbs*deltaT, Time+deltaT );
         velocity_jet[0]=1.0;
@@ -294,35 +285,13 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
                 pStatNew = 1; 
             }
         }
-        else if (process == gg_split || process == gq_split || process == ggqqb_split || process == qg_split || process == qq_split || process == qqp_split || process == qqb_split || process == qqbp_split)
+        else if (process == gg_split || process == gq_split || process == qg_split || process == qq_split || process == qqp_split || process == qqb_split)
         {
             double x = xSampling(pRest, T, process); 
             omega = pRest * x; 
             // qperp = 0.1; 
 	    qperp = TransverseMomentum_Transfer_Split(pRest, omega, T, process);
-            // std::cout << "gg split omega and qperp " << omega << " " << qperp << "\n"; 
             pVecRestNew = Momentum_Update(omega, qperp, T, pVecRest);
-            // std::cout << pVecRest.t() - pVecRestNew.t() << " " << omega << "\n"; 
-            if (process == ggqqb_split)
-            {
-                double r = ZeroOneDistribution(*GetMt19937Generator());
-                if (r < 1./6.) Id = 1;
-                else if (r < 2./6.) Id = 2;
-                else if (r < 3./6.) Id = 3;
-                else if (r < 4./6.) Id = -1;
-                else if (r < 3./6.) Id = 3;
-                else if (r < 4./6.) Id = -1;
-                else if (r < 5./6.) Id = -2;
-                else Id = -3;
-            }
-            if (process == qqbp_split)
-            {
-                double r = ZeroOneDistribution(*GetMt19937Generator());
-                if (r < 1./4.) Id = (abs(Id)+1) % 3 + 1;
-                else if (r < 2./4.) Id = (abs(Id)+2) % 3 + 1;
-                else if (r < 3./4.) Id = -1*((abs(Id)+1) % 3 + 1);
-                else Id = -1*((abs(Id)+2) % 3 + 1);
-            }
             if (recoil_on)
             {
                 qVec = FourVector(pVecRest.x()-pVecRestNew.x(), pVecRest.y()-pVecRestNew.y(), pVecRest.z()-pVecRestNew.z(), pVecRest.t()-pVecRestNew.t());
@@ -353,11 +322,11 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
                     else if (r < 3./4.) IdNew = -1*((abs(Id)+1) % 3 + 1);
                     else IdNew = -1*((abs(Id)+2) % 3 + 1);
                 }
-                else if (process == qqb_split || process == qqbp_split || process == ggqqb_split)
+                else if (process == qqb_split)
                     IdNew = -1*Id; 
                 pStatNew = 1; 
             }
-        }
+        }/*
         else if (process == ggg)
       	{ 
             if (pRest/T < AMY_p_over_T_cut) return;
@@ -419,7 +388,7 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
             kVecRest.Set( (pxRest/pRest)*kRest, (pyRest/pRest)*kRest, (pzRest/pRest)*kRest, kRest );
             IdNew = 21; 
             pStatNew = 1; 
-        }
+        }*/
         else pVecRestNew = pVecRest;
         // diffusion process
         // pVecRestNew = pVecRest; 
@@ -480,7 +449,6 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
             }
  
         }
-        std::cout << "before return\n"; 
       	return; 
     }
 }
@@ -496,17 +464,36 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
     {
         process_type process = static_cast<process_type>(i); 
         rate[i] = interpolatorElasticTotalRate(T, process); 
+        rate[i] += casimir[i] * pow(g*g*T, 2) / (2*elas_omega_over_T_pos_max*T);
+        rate[i] -= casimir[i] * pow(g*g*T, 2) / Lambda;     // Add the cutoff Lambda
+        rate[i] -= interpolatorElasticEnergyLoss(T, process) / pRest;
+        rate[i] -= 1. / 96 / M_PI / pRest * pow(g*g*T, 2) * Toverp_c_ln[i]*log(elas_omega_over_T_pos_max);
+        rate[i] += 1. / 96 / M_PI / pRest * pow(g*g*T, 2) * Toverp_c_ln[i]*log(Lambda/T/2);
         // rate[i] += casimir[i] * pow(g*g*T, 2) / (2*elas_omega_over_T_pos_max*T); 
         // rate[i] -= casimir[i] * pow(g*g*T, 2) / Lambda; 
     }
-    // JSINFO << "rate gg " << rate[gg] << " rate gq " << rate[gq] << " rate qg " << rate[qg]; 
-    for (int i = gg_split; i <= qqbp_split; i++)
-    {	
-        rate[i] = splitting_c_lambda[i - gg_split]*pRest/Lambda + splitting_c_p[i - gg_split] + splitting_c_ln[i - gg_split]*log(2*pRest/Lambda); 
-        rate[i] *= pow(g, 4)*pow(T, 2)/M_PI/pRest; 
+    // JSINFO << "rate gg " << rate[gg] << " rate gq " << rate[gq] << " rate qg " << rate[qg] << " rate qq " << rate[qq] << " rate qqb " << rate[qqb]; 
+    std::cout << "gg " << rate[gg] << " gq " << rate[gq] << " qg " << rate[qg] << " qqp " << rate[qqp] << " qqb " << rate[qqb] << " GqQg " << rate[GqQg] << " QgGq " << rate[QgGq] << " GgQbq " << rate[GgQbq] << " QbqGg " << rate[QbqGg] << "\n"; 
+
+    for (int i = GqQg; i <= QbqGg; i++)
+    {
+        process_type process = static_cast<process_type>(i); 
+        rate[i] = interpolatorElasticTotalRate(T, process) * T / pRest;
+        rate[i] += 1. / 96 / M_PI * pow(g*g, 2) * T * Toverp_c_ln[i]*log(elas_omega_over_T_pos_max) * T /pRest;
+        rate[i] -= 1. / 96 / M_PI * pow(g*g, 2) * T * Toverp_c_ln[i]*log(Lambda/T/2) * T / pRest;
     }
 
-    // JSINFO << "gg_split " << rate[gg_split] << " " << "gq_split " << rate[gq_split] << " " << "qg_split " << rate[qg_split] << " " << "qqp_split " << rate[qqp_split] << " " << "qqb_split " << rate[qqb_split] << " " << "ggqqb_split " << rate[ggqqb_split] << " qqbp_split " << rate[qqbp_split] << " qq_split " << rate[qq_split]; 
+    for (int i = gg_split; i <= qqb_split; i++)
+    {	
+        rate[i] = splitting_c_lambda[i - gg_split]*pRest/Lambda + splitting_c_p[i - gg_split] + splitting_c_ln[i - gg_split]*log(2*pRest/Lambda); 
+        if (i == gg_split || i == qg_split)
+            rate[i] *= pow(g, 4)*pow(T, 2)/96/M_PI/pRest;
+        else
+            rate[i] *= pow(g, 4)*pow(T, 2)/1536/M_PI/pRest;
+        // rate[i] *= pow(g, 4)*pow(T, 2)/M_PI/pRest; 
+    }
+
+    JSINFO << "gg_split " << rate[gg_split] << " " << "gq_split " << rate[gq_split] << " " << "qg_split " << rate[qg_split] << " " << "qqp_split " << rate[qqp_split] << " " << "qqb_split " << rate[qqb_split] << " qq_split " << rate[qq_split] << "\n"; 
 /*    JSINFO << BOLDGREEN << "pRest " << pRest << " Lambda " << Lambda << " gg_split " << rate[gg_split] << " gg_elas " << rate[gg] << "\n"; 
     JSINFO << BOLDGREEN << "pRest " << pRest << " Lambda " << Lambda << " gq_split " << rate[gq_split] << " gq_elas " << rate[gq] << "\n"; 
     JSINFO << BOLDGREEN << "pRest " << pRest << " Lambda " << Lambda << " qqp_split " << rate[qqp_split] << " qqp_elas " << rate[qqp] << "\n"; 
@@ -516,7 +503,9 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
     rate[qqg] = rate_inel(pRest, T, rate_qqg_p); 
     rate[gqq] = rate_inel(pRest, T, rate_gqq_p); 
     rate[ggg] = rate_inel(pRest, T, rate_ggg_p); 
-    // JSINFO << "rate qqg " << rate[qqg] << " rate gqq " << rate[gqq] << " rate ggg " << rate[ggg]; 
+
+    JSINFO << "rate qqg " << rate[qqg] << " rate gqq " << rate[gqq] << " rate ggg " << rate[ggg]; 
+
     if (std::abs(Id) == 1 || std::abs(Id) == 2 || std::abs(Id) == 3)
     {
         double totalQuarkProb = 0.; 
@@ -547,7 +536,15 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
 
             accumProb += Prob; 
             Prob = rate[qqb] * dt; 
-            if (accumProb <= randProb && randProb < (accumProb + Prob)) return qqb; 
+            if (accumProb <= randProb && randProb < (accumProb + Prob)) return qqb;
+
+            accumProb += Prob;
+            Prob = rate[QgGq] * dt;
+            if (accumProb <= randProb && randProb < (accumProb + Prob)) return QgGq;
+
+            accumProb += Prob;
+            Prob = rate[QbqGg] * dt;
+            if (accumProb <= randProb && randProb < (accumProb + Prob)) return QbqGg;
 
             accumProb += Prob; 
             Prob = rate[qg_split] * dt; 
@@ -564,11 +561,11 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
             accumProb += Prob; 
             Prob = rate[qqb_split] * dt; 
             if (accumProb <= randProb && randProb < (accumProb + Prob)) return qqb_split;
- 
+            /* 
             accumProb += Prob; 
             Prob = rate[qqbp_split] * dt; 
             if (accumProb <= randProb && randProb < (accumProb + Prob)) return qqbp_split; 
-
+            */
             accumProb += Prob; 
             Prob = rate[qqg] * dt; 
             if (pRest/T > AMY_p_over_T_cut && accumProb <= randProb && randProb < (accumProb + Prob)) return qqg; 
@@ -599,6 +596,14 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
             Prob = rate[gq] * dt; 
             if (accumProb <= randProb && randProb < (accumProb + Prob)) return gq;
 
+            accumProb += Prob;
+            Prob = rate[GqQg] * dt;
+            if (accumProb <= randProb && randProb < (accumProb + Prob)) return GqQg;
+
+            accumProb += Prob;
+            Prob = rate[GgQbq] * dt;
+            if (accumProb <= randProb && randProb < (accumProb + Prob)) return GgQbq;
+
             accumProb += Prob; 
             Prob = rate[gg_split] * dt; 
             if (accumProb <= randProb && randProb < (accumProb + Prob)) return gg_split; 
@@ -606,11 +611,11 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
             accumProb += Prob; 
             Prob = rate[gq_split] * dt; 
             if (accumProb <= randProb && randProb < (accumProb + Prob)) return gq_split;
-
+            /*
             accumProb += Prob; 
             Prob = rate[ggqqb_split] * dt; 
             if (accumProb <= randProb && randProb < (accumProb + Prob)) return ggqqb_split;
-
+            */
             accumProb += Prob; 
             Prob = rate[ggg] * dt; 
             if (pRest/T > AMY_p_over_T_cut && accumProb <= randProb && randProb < (accumProb + Prob)) return ggg; 
@@ -944,22 +949,22 @@ double Tequila::splittingF(double x, process_type process)
 	double F = 0.; 
 	switch(process)
 	{
-		case gg_split: F = 16.*CA*CA*(3+(1.-x)/pow(x, 2)+x/pow(1.-x, 2)-x*(1.-x)); 
+		case gg_split: F = 16.*CA*CA*(3.+(1.-x)/pow(x, 2)+x/pow(1.-x, 2)-x*(1.-x)); 
 			 break; 
-		case gq_split: F = 4.*(1.+pow(1.-x, 2))/(pow(x, 2)*(1.-x))*(CF*pow(x, 2)+CA*(1.-x)); 
+		case gq_split: F = 4.*(1.+pow(1.-x, 2))/(pow(x, 2)*(1.-x))*(CF*pow(x, 2)+CA*(1.-x))*6./2; 
 		 	 break; 
-                case ggqqb_split: F = CF*((1.-x)/x+x/(1.-x))-CA*(x*x+pow(1.-x, 2)); 
-                         break; 
+                // case ggqqb_split: F = CF*((1.-x)/x+x/(1.-x))-CA*(x*x+pow(1.-x, 2)); 
+                //          break; 
 		case qg_split: F = 8.*CF*(1.+pow(1.-x, 2))/(pow(x, 2)*(1.-x))*(CF*pow(x, 2)+CA*(1.-x));
 			 break; 
-		case qq_split: F = 4.*CF*((1.+pow(1.-x, 2))/pow(x, 2)+(1.+pow(x, 2))/pow(1.-x, 2))+16.*CF*(CF-CA/2)/x/(1.-x); 
+		case qq_split: F = (4.*CF*((1.+pow(1.-x, 2))/pow(x, 2)+(1.+pow(x, 2))/pow(1.-x, 2))+16.*CF*(CF-CA/2)/x/(1.-x))/2/2; 
 			 break; 
-		case qqp_split: F = 4.*CF*(1.+pow(1.-x, 2))/pow(x, 2); 
+		case qqp_split: F = 4.*CF*(1.+pow(1.-x, 2))/pow(x, 2)*4./2; 
 			 break; 
-		case qqb_split: F = 4.*CF*((1.+pow(1.-x, 2))/pow(x, 2)+pow(x, 2)+pow(1.-x, 2))-16.*CF*(CF-CA/2)*pow(1.-x, 2)/x; 
+		case qqb_split: F = 4.*CF*((1.+pow(1.-x, 2))/pow(x, 2)+pow(x, 2)+pow(1.-x, 2))-16.*CF*(CF-CA/2)*pow(1.-x, 2)/x/2; 
 			 break; 
-                case qqbp_split: F = CF*(x*x+pow(1.-x, 2));
-                         break;  
+                // case qqbp_split: F = CF*(x*x+pow(1.-x, 2));
+                //          break;  
 		default: JSWARN << "The process determination is wrong! The process is " << process; 
 			 break; 
 	}
@@ -992,7 +997,6 @@ void Tequila::LoadElasticTables()
     	        iTables.xa[iomega] = -exp(((double)(Nw/5-iomega))*(log(-elas_omega_over_T_neg_min)-log(-elas_omega_over_T_neg_max))/Nw*5.+log(-elas_omega_over_T_neg_max)); 
 	    else
 		iTables.xa[iomega] = exp(((double)(iomega-Nw/5-1.))*(log(elas_omega_over_T_pos_max)-log(elas_omega_over_T_pos_min))/Nw*5./4+log(elas_omega_over_T_pos_min));
-            // JSINFO << iTables.xa[iomega]; 
             for (size_t iqperp = 0; iqperp <= Nq; iqperp++)
             {
                 iTables.ya[iqperp] = pow(exp(((double)iqperp)*(log(elas_qperp_over_T_max)-log(muqperp_over_T_0))/Nq+log(muqperp_over_T_0)), 2); 
@@ -1005,7 +1009,6 @@ void Tequila::LoadElasticTables()
 
         for (size_t iomega = 0; iomega <= Nw+1; iomega++)
         {
-            // JSINFO << iTables.xa[iomega]; 
             iTables.x[iomega] = iTables.xa[iomega]; 
             // iTables.y[iomega] = 0.; 
             iqperp0 = (int)((log(muqperp_over_T)-log(muqperp_over_T_0))/(log(elas_qperp_over_T_max)-log(muqperp_over_T_0))*Nq); 
@@ -1014,37 +1017,96 @@ void Tequila::LoadElasticTables()
                 double dy = pow(exp(((double)(iqperp+1))*(log(elas_qperp_over_T_max)-log(muqperp_over_T_0))/Nq+log(muqperp_over_T_0)), 2) - pow(exp(((double)iqperp)*(log(elas_qperp_over_T_max)-log(muqperp_over_T_0))/Nq+log(muqperp_over_T_0)), 2); 
                 iTables.y[iomega] += dy * (iTables.rate_qperp2[iomega][iqperp] + iTables.rate_qperp2[iomega][iqperp+1]) / 2; 
             }
-            // JSINFO << "omega " << iomega << " " << iTables.xa[iomega] << " " << Nw+1; 
         }
 
         size_t i_total_rate = 0; 	// total rate iteration is different from x and y, because of the gap around 0
         for (size_t iomega = 0; iomega < Nw+1; iomega++)
         {
-            // JSINFO << iTables.x[iomega]; 
 	    if (abs(iTables.x[iomega]-elas_omega_over_T_neg_max) <= epsilon && iTables.x[iomega] < elas_omega_over_T_pos_min) continue;  
             double dx = iTables.x[iomega+1] - iTables.x[iomega];
             iTables.total_rate[0][i_total_rate] = iTables.x[iomega+1]; 
-            // JSINFO << iTables.total_rate[0][i_total_rate] << " " << i_total_rate; 
+            iTables.total_rate_w[0][i_total_rate] = iTables.x[iomega+1]; 
             if (iomega == 0)
+            {
                 iTables.total_rate[1][i_total_rate] = (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2; 
+                iTables.total_rate_w[1][i_total_rate] = (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2 * (iTables.x[iomega] + iTables.x[iomega+1]) / 2; 
+            }
             else
+            {
                 iTables.total_rate[1][i_total_rate] = iTables.total_rate[1][i_total_rate-1] + (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2;
-            // JSINFO << iTables.total_rate[0][iomega] << " " << iTables.total_rate[1][iomega];  
+                iTables.total_rate_w[1][i_total_rate] = iTables.total_rate_w[1][i_total_rate-1] + (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2 * (iTables.x[iomega] + iTables.x[iomega+1]) / 2;
+            }
             i_total_rate++; 
         }
         for (size_t iomega = 0; iomega <= Nw+1; iomega++)
         {
-            //JSINFO << iTables.xa[iomega]; 
             iTables.y[iomega] = log(iTables.y[iomega]*(iTables.x[iomega]*iTables.x[iomega]+1)); 
         }
-        // JSINFO << BOLDWHITE << iTables.rate; 
-        // iTables.rate *= pow(g, 4); 
-        // JSINFO << BOLDGREEN << "muqperp_over_T is " << muqperp_over_T << " rate is " << iTables.rate; 
         elasticTable.push_back(iTables); 
+    }
+
+    for (int iProcess = GqQg; iProcess <= QbqGg; iProcess++)
+    {
+        process_type process = static_cast<process_type>(iProcess); 
+        tables iTables; 
+        std::cout << "i process is " << iProcess << "\n"; 
+	if (!is_exist((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+"for_wdGdw.dat").c_str())) inttabulator.Tabulator_omega_dGamma_domega_qperp2(path_to_tables, process); 
+	std::ifstream table2d_in_2((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+"for_wdGdw.dat").c_str()); 
+	if (is_empty(table2d_in_2)) inttabulator.Tabulator_omega_dGamma_domega_qperp2(path_to_tables, process); 
+        std::cout << "after load\n"; 
+	double z; 
+    	for (size_t iomega = 0; iomega <= Nw; iomega++)
+    	{
+    	    iTables.xa[iomega] = ((double)iomega)*(elas_omega_over_T_pos_max-elas_omega_over_T_neg_min)/Nw+elas_omega_over_T_neg_min; 
+	    // double qperpMax = 2.*sqrt(kMax*kMax + kMax*iTables.xa[iomega]); 
+	    for (size_t iqperp = 0; iqperp <= Nq; iqperp++)
+    	    {
+    	        iTables.ya[iqperp] = ((double)iqperp)*(elas_qperp_over_T_max-muqperp_over_T_0)/Nq+muqperp_over_T_0; 
+		table2d_in_2 >> z; 
+		iTables.rate_qperp2[iomega][iqperp] = z; 
+		gsl_interp2d_set(interp, &za[iProcess*(Nw+1)*(Nq+1)], iomega, iqperp, log(z)); 
+    	    }
+    	}
+	table2d_in_2.close(); 
+
+	for (size_t iomega = 0; iomega <= Nw; iomega++)
+    	{
+	    iTables.x[iomega] = iTables.xa[iomega]; 
+	    iTables.y[iomega] = 0.;
+	    // double qperpMax = 2.*sqrt(kMax*kMax + kMax*iTables.x[iomega]); 
+	    iqperp0 = (int)((muqperp_over_T-muqperp_over_T_0)/(elas_qperp_over_T_max-muqperp_over_T_0)*Nq); 
+	    for (size_t iqperp = iqperp0; iqperp < Nq; iqperp++)
+    	    {
+	        double dy = (elas_qperp_over_T_max-muqperp_over_T_0)/Nq; 
+		iTables.y[iomega] += dy * (iTables.rate_qperp2[iomega][iqperp] + iTables.rate_qperp2[iomega][iqperp+1]) / 2; 
+	    }
+	}
+
+        size_t i_total_rate = 0; 	// total rate iteration is different from x and y, because of the gap around 0
+	for (size_t iomega = 0; iomega < Nw; iomega++)
+    	{
+	    if (abs(iTables.x[iomega]-elas_omega_over_T_neg_max) <= epsilon && iTables.x[iomega] < elas_omega_over_T_pos_min) continue;  
+    	    double dx = iTables.x[iomega+1] - iTables.x[iomega]; 
+            iTables.total_rate[0][i_total_rate] = iTables.x[iomega+1]; 
+            iTables.total_rate_w[0][i_total_rate] = iTables.x[iomega+1]; 
+            if (iomega == 0)
+            {
+                iTables.total_rate[1][i_total_rate] = (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2; 
+                iTables.total_rate_w[1][i_total_rate] = (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2 * (iTables.x[iomega] + iTables.x[iomega+1]) / 2; 
+            }
+            else
+            {
+                iTables.total_rate[1][i_total_rate] = iTables.total_rate[1][i_total_rate-1] + (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2;
+                iTables.total_rate_w[1][i_total_rate] = iTables.total_rate_w[1][i_total_rate-1] + (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2 * (iTables.x[iomega] + iTables.x[iomega+1]) / 2;
+            }
+            i_total_rate++; 
+	}
+	elasticTable.push_back(iTables); 
     }
     gsl_interp2d_free(interp); 
 }
 
+// Use interpolator for total rate to estimate the rate up to Lambda
 double Tequila::interpolatorElasticTotalRate(double T, process_type process)
 {
     gsl_interp_accel *acc = gsl_interp_accel_alloc ();
@@ -1055,6 +1117,19 @@ double Tequila::interpolatorElasticTotalRate(double T, process_type process)
     gsl_interp_free (interp); 
     gsl_interp_accel_free (acc); 
     return result * T * pow(g, 4); 
+}
+
+// The interpolation of integral(w*dw)
+double Tequila::interpolatorElasticEnergyLoss(double T, process_type process)
+{
+    gsl_interp_accel *acc = gsl_interp_accel_alloc ();
+    gsl_interp *interp = gsl_interp_alloc (gsl_interp_linear, Nw);
+    gsl_interp_init (interp, elasticTable[process].total_rate_w[0], elasticTable[process].total_rate_w[1], Nw); 
+    double result; 
+    result = gsl_interp_eval (interp, elasticTable[process].total_rate_w[0], elasticTable[process].total_rate_w[1], Lambda/2/T, acc);  
+    gsl_interp_free (interp); 
+    gsl_interp_accel_free (acc); 
+    return result * T * T * pow(g, 4); 
 }
 
 double Tequila::Interpolator_dGamma_domega(double omega, process_type process)
@@ -1300,11 +1375,10 @@ void Tequila::evaluate_integrated_rate(double omega_over_T_cut, double *** diffe
 
 		// Maximum point in omega/T necessary
 		int pOver2T_cut_pos_position_int=ceil(get_index_from_omega_over_T(p_over_T,p_over_T/2.0))+2;
-                if (process == gqq || process == qqg) pOver2T_cut_pos_position_int=ceil(get_index_from_omega_over_T(p_over_T,p_over_T-omega_over_T_cut))+2; 
+                if (process == qqg)  pOver2T_cut_pos_position_int=ceil(get_index_from_omega_over_T(p_over_T,p_over_T-omega_over_T_cut))+2; 
 		//Arrays to store the omega/T rates
 		double * omega_rate_array = new double [pOver2T_cut_pos_position_int];
 		double * omega_position_array = new double [pOver2T_cut_pos_position_int];
-		// WARN << "before the loop "; 
 		// Fill an array with the qperp-integrated values for each omega points
 		for(int iomega=0;iomega<pOver2T_cut_pos_position_int; iomega++) {
 
@@ -1347,9 +1421,15 @@ void Tequila::evaluate_integrated_rate(double omega_over_T_cut, double *** diffe
 		integral_omega+=gsl_interp_eval_integ(interp, omega_position_array, omega_rate_array, omega_over_T_min(p_over_T), std::max(omega_over_T_min(p_over_T), -1.*omega_over_T_cut), acc);
 		// integral in omega from omega_over_T_cut to p_over_T/2
 		double omega_over_T_int_max = p_over_T/2; 
-		if (process == gqq || process == qqg)
-			omega_over_T_int_max = p_over_T - omega_over_T_cut; 
-		integral_omega+=gsl_interp_eval_integ(interp, omega_position_array, omega_rate_array , std::min(omega_over_T_cut, omega_over_T_int_max), omega_over_T_int_max, acc);
+		if (process == qqg)
+                {
+		    omega_over_T_int_max = p_over_T - omega_over_T_cut; 
+		    integral_omega += gsl_interp_eval_integ(interp, omega_position_array, omega_rate_array , std::min(omega_over_T_cut, omega_over_T_int_max), omega_over_T_int_max, acc);
+                }
+                else if (process == ggg)
+		    integral_omega += gsl_interp_eval_integ(interp, omega_position_array, omega_rate_array , std::min(omega_over_T_cut, omega_over_T_int_max), omega_over_T_int_max, acc);
+                else if (process == gqq)
+		    integral_omega += 2. * gsl_interp_eval_integ(interp, omega_position_array, omega_rate_array , std::min(omega_over_T_cut, omega_over_T_int_max), omega_over_T_int_max, acc);
 		// free memory
 		gsl_interp_free(interp);
 		gsl_interp_accel_free(acc);
@@ -1480,13 +1560,13 @@ void Tequila::sample_dgamma_dwdq(double p, double T, double *** differential_rat
 	const double omega_over_T_neg_max=-muomega_over_T;
 	const double omega_over_T_pos_min=muomega_over_T;
 	double omega_over_T_pos_max=p_over_T/2.0;
-        if (process == gqq || process == qqg)
+        if (process == qqg)
             omega_over_T_pos_max = std::max(p_over_T - omega_over_T_pos_min, omega_over_T_pos_min); 
 	const double omega_over_T_neg_span=(omega_over_T_neg_max-omega_over_T_neg_min);
 	const double omega_over_T_pos_span=(omega_over_T_pos_max-omega_over_T_pos_min);
 
 	double max_rate=maximum_rate_p(p_over_T, differential_rate_p_omega_qperp);
-        if (process == gqq) max_rate *= 50.; 
+        // if (process == gqq) max_rate *= 50.; 
 
 	while (ntry < ntry_max) {
 		//      fRateTable.sample_in_x1range(-GSL_DBL_MAX,lam/(2.*T), rng, params, w, q) ;
