@@ -93,7 +93,7 @@ void Tequila::Init()
 
     muqperp_over_T = GetXMLElementDouble({"Eloss", "Tequila", "muqperp_over_T"});
     muomega_over_T = GetXMLElementDouble({"Eloss", "Tequila", "muomega_over_T"});
-    // qhat_coef = GetXMLElementDouble({"Eloss", "Tequila", "qhat_coef"});
+    qhat_coef = GetXMLElementDouble({"Eloss", "Tequila", "qhat_coef"});
 
     // Path to additional data
     path_to_tables = GetXMLElementText({"Eloss", "Tequila", "path"});
@@ -251,8 +251,8 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
       	else if (process == gg || process == gq || process == qg || process == qq || process == qqp || process == qqb)
       	{
       	    omega = Energy_Transfer(pRest, T, process); 
-	    qperp = TransverseMomentum_Transfer(pRest, omega, T, process);
-	    // qperp = 0.1;
+	        qperp = TransverseMomentum_Transfer(pRest, omega, T, process);
+	        // qperp = 0.1;
             pVecRestNew = Momentum_Update(omega, qperp, T, pVecRest); 
             pRestNew = pVecRestNew.t(); 
             if (recoil_on)
@@ -288,30 +288,30 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
       	else if (process == GqQg || process == GgQbq)
       	{
       	    omega = Energy_Transfer(pRest, T, process)*T; 
-	    qperp = 0.; 
-	    pVecRestNew = Momentum_Update(omega, qperp, T, pVecRest); 
-	    // choose the Id of new qqbar pair. Note that we only deal with nf = 3
-	    double r = ZeroOneDistribution(*GetMt19937Generator());
-	    if (r < 1./6.) Id = 1;
-	    else if (r < 2./6.) Id = 2;
-	    else if (r < 3./6.) Id = 3;
-	    else if (r < 4./6.) Id = -1; 
-	    else if (r < 5./6.) Id = -2; 
-	    else Id = -3; 
-	}
+	        qperp = 0.; 
+	        pVecRestNew = Momentum_Update(omega, qperp, T, pVecRest); 
+	        // choose the Id of new qqbar pair. Note that we only deal with nf = 3
+	        double r = ZeroOneDistribution(*GetMt19937Generator());
+	        if (r < 1./6.) Id = 1;
+	        else if (r < 2./6.) Id = 2;
+	        else if (r < 3./6.) Id = 3;
+	        else if (r < 4./6.) Id = -1; 
+	        else if (r < 5./6.) Id = -2; 
+	        else Id = -3; 
+	    }
       	else if (process == QgGq || process == QbqGg)
       	{
       	    omega = Energy_Transfer(pRest, T, process)*T; 
-	    qperp = 0.; 
-	    pVecRestNew = Momentum_Update(omega, qperp, T, pVecRest);
+	        qperp = 0.; 
+	        pVecRestNew = Momentum_Update(omega, qperp, T, pVecRest);
             Id = 21;  
-	}
+	    }
         else if (process == gg_split || process == gq_split || process == qg_split || process == qq_split || process == qqp_split || process == qqb_split)
         {
             double x = xSampling(pRest, T, process); 
             omega = pRest * x; 
             // qperp = 0.1; 
-	    qperp = TransverseMomentum_Transfer_Split(pRest, omega, T, process);
+	        qperp = TransverseMomentum_Transfer_Split(pRest, omega, T, process);
             pVecRestNew = Momentum_Update(omega, qperp, T, pVecRest);
             if (recoil_on)
             {
@@ -411,10 +411,11 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
             pStatNew = 1; 
         }*/
         else pVecRestNew = pVecRest;
-        // diffusion process
         // pVecRestNew = pVecRest; 
         
+        // diffusion process
         pVecRestNewest = Langevin_Update(deltaTRest / hbarc, T, pVecRestNew, Id);
+
         // pVecRestNewest = pVecRestNew;
         if (pVecRestNewest.t() > pcut)
         {

@@ -3,8 +3,8 @@
 <jetscape>
   
   <nEvents> 100000 </nEvents>
-  <setReuseHydro> true </setReuseHydro>
-  <nReuseHydro> 100000 </nReuseHydro>
+  <!--setReuseHydro> true </setReuseHydro>
+  <nReuseHydro> 100000 </nReuseHydro-->
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
   <outputFilename>Tequila_gluon_1fm_elas</outputFilename>
@@ -23,7 +23,7 @@
       <name>PGun</name>
       <pT>100</pT>
       <parID>21</parID>
-      <useHybridHad>0</useHybridHad>
+      <!--useHybridHad>0</useHybridHad-->
     </PGun>
 
   </Hard>
@@ -41,16 +41,16 @@
 
     <deltaT>0.01</deltaT>
     <formTime> -0.1</formTime>
-    <maxT>1</maxT>
-    <mutex>ON</mutex>
+    <maxT>1.</maxT>
+    <!--mutex>ON</mutex-->
 
   
     <Tequila>
       <name> Tequila </name>
       <alpha_s> 0.3 </alpha_s>
       <pcut> 2. </pcut>
-      <Q0> 1.0 </Q0>
-      <hydro_Tc> 0.16 </hydro_Tc>
+      <!--Q0> 1.0 </Q0-->
+      <!--hydro_Tc> 0.16 </hydro_Tc-->
       <recoil_on> 1 </recoil_on>
       <muomega_over_T> 1. </muomega_over_T>
       <muqperp_over_T> 1. </muqperp_over_T>

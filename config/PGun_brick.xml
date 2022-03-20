@@ -2,22 +2,18 @@
 
 <jetscape>
   
-  <nEvents> 100000 </nEvents>
+  <nEvents> 1 </nEvents>
   <setReuseHydro> true </setReuseHydro>
   <nReuseHydro> 100000 </nReuseHydro>
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
-  <outputFilename>PGun_brick_LBT_parton_alpha0.25</outputFilename>
+  <outputFilename>test</outputFilename>
   <vlevel> 0 </vlevel>
   <nEvents_printout> 1 </nEvents_printout>
 
   <Random>
     <seed>1</seed>
   </Random>
-  <!-- Inital State Module  -->
-  <IS>
-    <initial_profile_path>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</initial_profile_path>
-  </IS>
   
   <!-- Hard Process -->
   <Hard>
@@ -60,5 +56,6 @@
       <qhat_coef> 1. </qhat_coef>
       <path>../src/jet/Tequila/</path>
     </Tequila>
+  </Eloss>
 
 </jetscape>

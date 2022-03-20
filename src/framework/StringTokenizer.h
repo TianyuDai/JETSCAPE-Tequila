@@ -56,6 +56,7 @@ public:
   bool isCommentEntry() const;
   bool isEventEntry() const;
   bool isHadronEntry() const;
+  bool isPartonEntry() const;
 
 private:
   void skipDelimiter();     // ignore leading delimiters

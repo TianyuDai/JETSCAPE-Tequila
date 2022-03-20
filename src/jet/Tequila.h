@@ -31,7 +31,7 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
   	double alpha_EM;
   	double hydro_Tc;
   	double muomega_over_T;
-        double qhat_coef; 
+    double qhat_coef; 
 	double Lambda; 
         int recoil_on;
         double hydro_tStart; 
