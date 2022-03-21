@@ -112,9 +112,9 @@ template <class T> void JetScapeReader<T>::Next() {
 
   JSINFO << "Current Event = " << currentEvent;
 
-  pShowers.push_back(make_shared<PartonShower>());
-  pShower = pShowers[0];
-  currentShower = 1;
+  // pShowers.push_back(make_shared<PartonShower>());
+  // pShower = pShowers[0];
+  // currentShower = 1;
 
   int nodeZeroCounter = 0;
   std::string EPAngleStr = "EventPlaneAngle";
@@ -194,7 +194,8 @@ template <class T> void JetScapeReader<T>::Next() {
     // rest is list entry == hadron entry
     // Some questionable nomenclature here - identifying all that begins with "[" as "GraphEntry"
     // oh well
-    AddHadron(line);
+    if (strT.isHadronEntry())
+        AddHadron(line);
   }
 
   if (Finished())
