@@ -136,6 +136,27 @@ template <class T> void JetScapeWriterStream<T>::WriteInitFileXMLUser() {
   output_file << printer.CStr();
 }
 
+template<class T>
+void JetScapeWriterStream<T>::Write(weak_ptr<PartonShower> ps){
+  auto pShower = ps.lock();
+  if ( !pShower) return;
+  
+  WriteComment("Final State Parton List"); 
+  PartonShower::node_iterator nIt, nEnd; 
+  nIt = pShower->nodes_begin(); 
+  for (auto p : pShower->GetFinalPartons())
+  {
+    // std::cout << p->pstat() << "\n"; 
+    // if (p->pstat() > pcut)
+    // {
+         WriteWhiteSpace("["+to_string(nIt->id())+"] P"); 
+         Write(p); 
+         ++nIt; 
+    // }
+  }
+}
+
+/*
 template <class T>
 void JetScapeWriterStream<T>::Write(weak_ptr<PartonShower> ps) {
   auto pShower = ps.lock();
@@ -162,6 +183,7 @@ void JetScapeWriterStream<T>::Write(weak_ptr<PartonShower> ps) {
     Write(pShower->GetParton(*eIt));
   }
 }
+*/
 
 template <class T> void JetScapeWriterStream<T>::Write(weak_ptr<Hadron> h) {
   auto hh = h.lock();

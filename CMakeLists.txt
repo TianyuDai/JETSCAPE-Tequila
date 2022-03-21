@@ -356,6 +356,7 @@ include_directories(./external_packages/)
 include_directories(./external_packages/gtl/include )
 include_directories(./external_packages/hydro_from_external_file )
 include_directories(./examples/ )
+include_directories(./Tequila_test/ )
 
 
 ### include_directories will be expanded as packages are found
@@ -462,7 +463,10 @@ target_link_libraries(readerTest JetScape )
 add_executable(FinalStateHadrons ./examples/FinalStateHadrons.cc)
 target_link_libraries(FinalStateHadrons JetScape )
 
-add_executable(FinalStatePartons ./examples/FinalStatePartons.cc)
+add_executable(FinalStatePartonFromShowering ./examples/FinalStatePartonFromShowering.cc)
+target_link_libraries(FinalStatePartonFromShowering JetScape )
+
+add_executable(FinalStatePartons ./Tequila_test/FinalStatePartons.cc)
 target_link_libraries(FinalStatePartons JetScape )
 
 add_executable(FinalStateHadronJets ./examples/FinalStateHadronJets.cc)
