@@ -494,7 +494,7 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
         // rate[i] += casimir[i] * pow(g*g*T, 2) / (2*elas_omega_over_T_pos_max*T); 
         // rate[i] -= casimir[i] * pow(g*g*T, 2) / Lambda; 
     }
-    JSINFO << "rate gg " << rate[gg] << " rate gq " << rate[gq] << " rate qg " << rate[qg] << " rate qq " << rate[qq] << " rate qqb " << rate[qqb]; 
+    // JSINFO << "rate gg " << rate[gg] << " rate gq " << rate[gq] << " rate qg " << rate[qg] << " rate qq " << rate[qq] << " rate qqb " << rate[qqb]; 
     // std::cout << "gg " << rate[gg] << " gq " << rate[gq] << " qg " << rate[qg] << " qqp " << rate[qqp] << " qqb " << rate[qqb] << " GqQg " << rate[GqQg] << " QgGq " << rate[QgGq] << " GgQbq " << rate[GgQbq] << " QbqGg " << rate[QbqGg] << "\n"; 
 
     for (int i = GqQg; i <= QbqGg; i++)
@@ -504,7 +504,7 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
         rate[i] += 1. / 96 / M_PI * pow(g*g, 2) * T * Toverp_c_ln[i]*log(elas_omega_over_T_pos_max) * T /pRest;
         rate[i] -= 1. / 96 / M_PI * pow(g*g, 2) * T * Toverp_c_ln[i]*log(Lambda/T/2) * T / pRest;
     }
-    JSINFO << "rate GqQg " << rate[GqQg] << " QbqGg " << rate[QbqGg] << "\n"; 
+    // JSINFO << "rate GqQg " << rate[GqQg] << " QbqGg " << rate[QbqGg] << "\n"; 
 
     for (int i = gg_split; i <= qqb_split; i++)
     {	
