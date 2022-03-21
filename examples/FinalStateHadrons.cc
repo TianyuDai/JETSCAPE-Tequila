@@ -74,7 +74,6 @@ int main(int argc, char** argv)
 //   auto reader = make_shared<JetScapeReaderAscii>(std::string()+argv[1]+"_i"+std::to_string(i)+".dat");
   
 
-  
   while (!reader->Finished())
   {
     reader->Next();
