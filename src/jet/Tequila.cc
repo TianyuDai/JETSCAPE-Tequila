@@ -347,7 +347,7 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
                     IdNew = -1*Id; 
                 pStatNew = 1; 
             }
-        }/*
+        }
         else if (process == ggg)
       	{ 
             if (pRest/T < AMY_p_over_T_cut) return;
@@ -409,7 +409,7 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
             kVecRest.Set( (pxRest/pRest)*kRest, (pyRest/pRest)*kRest, (pzRest/pRest)*kRest, kRest );
             IdNew = 21; 
             pStatNew = 1; 
-        }*/
+        }
         else pVecRestNew = pVecRest;
         // pVecRestNew = pVecRest; 
         
@@ -494,7 +494,7 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
         // rate[i] += casimir[i] * pow(g*g*T, 2) / (2*elas_omega_over_T_pos_max*T); 
         // rate[i] -= casimir[i] * pow(g*g*T, 2) / Lambda; 
     }
-    // JSINFO << "rate gg " << rate[gg] << " rate gq " << rate[gq] << " rate qg " << rate[qg] << " rate qq " << rate[qq] << " rate qqb " << rate[qqb]; 
+    JSINFO << "rate gg " << rate[gg] << " rate gq " << rate[gq] << " rate qg " << rate[qg] << " rate qq " << rate[qq] << " rate qqb " << rate[qqb]; 
     // std::cout << "gg " << rate[gg] << " gq " << rate[gq] << " qg " << rate[qg] << " qqp " << rate[qqp] << " qqb " << rate[qqb] << " GqQg " << rate[GqQg] << " QgGq " << rate[QgGq] << " GgQbq " << rate[GgQbq] << " QbqGg " << rate[QbqGg] << "\n"; 
 
     for (int i = GqQg; i <= QbqGg; i++)
@@ -504,6 +504,7 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
         rate[i] += 1. / 96 / M_PI * pow(g*g, 2) * T * Toverp_c_ln[i]*log(elas_omega_over_T_pos_max) * T /pRest;
         rate[i] -= 1. / 96 / M_PI * pow(g*g, 2) * T * Toverp_c_ln[i]*log(Lambda/T/2) * T / pRest;
     }
+    JSINFO << "rate GqQg " << rate[GqQg] << " QbqGg " << rate[QbqGg] << "\n"; 
 
     for (int i = gg_split; i <= qqb_split; i++)
     {	
@@ -759,7 +760,7 @@ double Tequila::qhatpara(double E, double T, int id)
     double Minf = sqrt(pow(mD, 2)/2.); 
     double qpara_elas = std::pow(g*Minf, 2)*CR*T/(2.*M_PI)*log(1.+pow(muqperp_over_T*T/Minf, 2))/2.; 
     double qpara_inel = std::pow(g, 4)*CR*CA*std::pow(T, 3)*muomega_over_T*(2-ln2)/(4.*std::pow(M_PI, 3)); 
-    return (qpara_elas/*+qpara_inel*/)*qhat_coef; 
+    return (qpara_elas+qpara_inel)*qhat_coef; 
 }
 
 double Tequila::qhatperp(double E, double T, int id)
@@ -771,7 +772,7 @@ double Tequila::qhatperp(double E, double T, int id)
     double mD = sqrt(std::pow(g*T, 2)*(nc/3. + nf/6.));
     double qperp_elas = std::pow(g*mD, 2) * CR * T / (2.*M_PI) * log(1.+pow(muqperp_over_T*T/mD, 2))/2.; 
     double qperp_inel = 0.;  
-    return (qperp_elas/*+qperp_inel*/)*qhat_coef;
+    return (qperp_elas+qperp_inel)*qhat_coef;
 }
 
 FourVector Tequila::Langevin_Update(double dt, double T, FourVector pIn, int id)
@@ -1072,41 +1073,41 @@ void Tequila::LoadElasticTables()
         process_type process = static_cast<process_type>(iProcess); 
         tables iTables; 
         std::cout << "i process is " << iProcess << "\n"; 
-	if (!is_exist((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+"for_wdGdw.dat").c_str())) inttabulator.Tabulator_omega_dGamma_domega_qperp2(path_to_tables, process); 
-	std::ifstream table2d_in_2((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+"for_wdGdw.dat").c_str()); 
-	if (is_empty(table2d_in_2)) inttabulator.Tabulator_omega_dGamma_domega_qperp2(path_to_tables, process); 
-	double z; 
+	    if (!is_exist((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+"for_wdGdw.dat").c_str())) inttabulator.Tabulator_omega_dGamma_domega_qperp2(path_to_tables, process); 
+	    std::ifstream table2d_in_2((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+"for_wdGdw.dat").c_str()); 
+	    if (is_empty(table2d_in_2)) inttabulator.Tabulator_omega_dGamma_domega_qperp2(path_to_tables, process); 
+	    double z; 
     	for (size_t iomega = 0; iomega <= Nw; iomega++)
     	{
     	    iTables.xa[iomega] = ((double)iomega)*(elas_omega_over_T_pos_max-elas_omega_over_T_neg_min)/Nw+elas_omega_over_T_neg_min; 
-	    // double qperpMax = 2.*sqrt(kMax*kMax + kMax*iTables.xa[iomega]); 
-	    for (size_t iqperp = 0; iqperp <= Nq; iqperp++)
+	        // double qperpMax = 2.*sqrt(kMax*kMax + kMax*iTables.xa[iomega]); 
+	        for (size_t iqperp = 0; iqperp <= Nq; iqperp++)
     	    {
     	        iTables.ya[iqperp] = ((double)iqperp)*(elas_qperp_over_T_max-muqperp_over_T_0)/Nq+muqperp_over_T_0; 
-		table2d_in_2 >> z; 
-		iTables.rate_qperp2[iomega][iqperp] = z; 
-		gsl_interp2d_set(interp, &za[iProcess*(Nw+1)*(Nq+1)], iomega, iqperp, log(z)); 
+		        table2d_in_2 >> z; 
+		        iTables.rate_qperp2[iomega][iqperp] = z; 
+		        gsl_interp2d_set(interp, &za[iProcess*(Nw+1)*(Nq+1)], iomega, iqperp, log(z)); 
     	    }
     	}
-	table2d_in_2.close(); 
+	    table2d_in_2.close(); 
 
-	for (size_t iomega = 0; iomega <= Nw; iomega++)
+	    for (size_t iomega = 0; iomega <= Nw; iomega++)
     	{
-	    iTables.x[iomega] = iTables.xa[iomega]; 
-	    iTables.y[iomega] = 0.;
-	    // double qperpMax = 2.*sqrt(kMax*kMax + kMax*iTables.x[iomega]); 
-	    iqperp0 = (int)((muqperp_over_T-muqperp_over_T_0)/(elas_qperp_over_T_max-muqperp_over_T_0)*Nq); 
-	    for (size_t iqperp = iqperp0; iqperp < Nq; iqperp++)
+	        iTables.x[iomega] = iTables.xa[iomega]; 
+	        iTables.y[iomega] = 0.;
+	        // double qperpMax = 2.*sqrt(kMax*kMax + kMax*iTables.x[iomega]); 
+	        iqperp0 = (int)((muqperp_over_T-muqperp_over_T_0)/(elas_qperp_over_T_max-muqperp_over_T_0)*Nq); 
+	        for (size_t iqperp = iqperp0; iqperp < Nq; iqperp++)
     	    {
-	        double dy = (elas_qperp_over_T_max-muqperp_over_T_0)/Nq; 
-		iTables.y[iomega] += dy * (iTables.rate_qperp2[iomega][iqperp] + iTables.rate_qperp2[iomega][iqperp+1]) / 2; 
+	            double dy = (elas_qperp_over_T_max-muqperp_over_T_0)/Nq; 
+		        iTables.y[iomega] += dy * (iTables.rate_qperp2[iomega][iqperp] + iTables.rate_qperp2[iomega][iqperp+1]) / 2; 
+	        }
 	    }
-	}
 
         size_t i_total_rate = 0; 	// total rate iteration is different from x and y, because of the gap around 0
-	for (size_t iomega = 0; iomega < Nw; iomega++)
+	    for (size_t iomega = 0; iomega < Nw; iomega++)
     	{
-	    if (abs(iTables.x[iomega]-elas_omega_over_T_neg_max) <= epsilon && iTables.x[iomega] < elas_omega_over_T_pos_min) continue;  
+	        if (abs(iTables.x[iomega]-elas_omega_over_T_neg_max) <= epsilon && iTables.x[iomega] < elas_omega_over_T_pos_min) continue;  
     	    double dx = iTables.x[iomega+1] - iTables.x[iomega]; 
             iTables.total_rate[0][i_total_rate] = iTables.x[iomega+1]; 
             iTables.total_rate_w[0][i_total_rate] = iTables.x[iomega+1]; 
@@ -1121,8 +1122,9 @@ void Tequila::LoadElasticTables()
                 iTables.total_rate_w[1][i_total_rate] = iTables.total_rate_w[1][i_total_rate-1] + (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2 * (iTables.x[iomega] + iTables.x[iomega+1]) / 2;
             }
             i_total_rate++; 
-	}
-	elasticTable.push_back(iTables); 
+	    }
+        // std::cout << iTables.total_rate[0][i_total_rate-1] << " " << iTables.total_rate[1][i_total_rate-1] << "\n"; 
+	    elasticTable.push_back(iTables); 
     }
     gsl_interp2d_free(interp); 
 }

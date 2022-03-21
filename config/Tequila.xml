@@ -2,12 +2,12 @@
 
 <jetscape>
   
-  <nEvents> 100000 </nEvents>
+  <nEvents> 1 </nEvents>
   <!--setReuseHydro> true </setReuseHydro>
   <nReuseHydro> 100000 </nReuseHydro-->
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
-  <outputFilename>Tequila_gluon_1fm_elas</outputFilename>
+  <outputFilename>test</outputFilename>
   <vlevel> 0 </vlevel>
   <nEvents_printout> 1 </nEvents_printout>
 
@@ -39,7 +39,7 @@
   <!--Eloss Modules -->
   <Eloss>
 
-    <deltaT>0.01</deltaT>
+    <deltaT>1.</deltaT>
     <formTime> -0.1</formTime>
     <maxT>1.</maxT>
     <!--mutex>ON</mutex-->
