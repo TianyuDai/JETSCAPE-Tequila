@@ -485,10 +485,10 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
     for (int i = gg; i <= qqb; i++)
     {
         process_type process = static_cast<process_type>(i); 
-        rate[i] = interpolatorElasticTotalRate(T, process); 
+        rate[i] = interpolatorElasticTotalRate(elas_omega_over_T_pos_max*T, T, process); 
         rate[i] += casimir[i] * pow(g*g*T, 2) / (2*elas_omega_over_T_pos_max*T);
         rate[i] -= casimir[i] * pow(g*g*T, 2) / Lambda;     // Add the cutoff Lambda
-        rate[i] -= interpolatorElasticEnergyLoss(T, process) / pRest;
+        rate[i] -= interpolatorElasticEnergyLoss(elas_omega_over_T_pos_max*T, T, process) / pRest;
         rate[i] -= 1. / 96 / M_PI / pRest * pow(g*g*T, 2) * Toverp_c_ln[i]*log(elas_omega_over_T_pos_max);
         rate[i] += 1. / 96 / M_PI / pRest * pow(g*g*T, 2) * Toverp_c_ln[i]*log(Lambda/T/2);
         // rate[i] += casimir[i] * pow(g*g*T, 2) / (2*elas_omega_over_T_pos_max*T); 
@@ -500,9 +500,11 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
     for (int i = GqQg; i <= QbqGg; i++)
     {
         process_type process = static_cast<process_type>(i); 
-        rate[i] = interpolatorElasticTotalRate(T, process) * T / pRest;
-        rate[i] += 1. / 96 / M_PI * pow(g*g, 2) * T * Toverp_c_ln[i]*log(elas_omega_over_T_pos_max) * T /pRest;
-        rate[i] -= 1. / 96 / M_PI * pow(g*g, 2) * T * Toverp_c_ln[i]*log(Lambda/T/2) * T / pRest;
+        rate[i] = interpolatorElasticTotalRate(elas_omega_over_T_pos_max*T, T, process) * T / pRest;
+        // JSINFO << "conversion " << rate[i] << "\n"; 
+        rate[i] += 1. / 96 / M_PI * pow(g, 4) * T * Toverp_c_ln[i]*log(elas_omega_over_T_pos_max) * T /pRest;
+        rate[i] -= 1. / 96 / M_PI * pow(g, 4) * T * Toverp_c_ln[i]*log(Lambda/2/T) * T / pRest;
+        // JSINFO << "coef " << g << " " << Toverp_c_ln[i] << " " << Lambda << " " << log(elas_omega_over_T_pos_max) << "\n"; 
     }
     // JSINFO << "rate GqQg " << rate[GqQg] << " QbqGg " << rate[QbqGg] << "\n"; 
 
@@ -1045,7 +1047,7 @@ void Tequila::LoadElasticTables()
         size_t i_total_rate = 0; 	// total rate iteration is different from x and y, because of the gap around 0
         for (size_t iomega = 0; iomega < Nw+1; iomega++)
         {
-	    if (abs(iTables.x[iomega]-elas_omega_over_T_neg_max) <= epsilon && iTables.x[iomega] < elas_omega_over_T_pos_min) continue;  
+	        if (abs(iTables.x[iomega]-elas_omega_over_T_neg_max) <= epsilon && iTables.x[iomega] < elas_omega_over_T_pos_min) continue;  
             double dx = iTables.x[iomega+1] - iTables.x[iomega];
             iTables.total_rate[0][i_total_rate] = iTables.x[iomega+1]; 
             iTables.total_rate_w[0][i_total_rate] = iTables.x[iomega+1]; 
@@ -1073,9 +1075,9 @@ void Tequila::LoadElasticTables()
         process_type process = static_cast<process_type>(iProcess); 
         tables iTables; 
         std::cout << "i process is " << iProcess << "\n"; 
-	    if (!is_exist((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+"for_wdGdw.dat").c_str())) inttabulator.Tabulator_omega_dGamma_domega_qperp2(path_to_tables, process); 
-	    std::ifstream table2d_in_2((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+"for_wdGdw.dat").c_str()); 
-	    if (is_empty(table2d_in_2)) inttabulator.Tabulator_omega_dGamma_domega_qperp2(path_to_tables, process); 
+	    if (!is_exist((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+".dat").c_str())) inttabulator.Tabulator_conversion_dGamma_domega_qperp(path_to_tables, process); 
+	    std::ifstream table2d_in_2((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+".dat").c_str()); 
+	    if (is_empty(table2d_in_2)) inttabulator.Tabulator_conversion_dGamma_domega_qperp(path_to_tables, process); 
 	    double z; 
     	for (size_t iomega = 0; iomega <= Nw; iomega++)
     	{
@@ -1110,46 +1112,47 @@ void Tequila::LoadElasticTables()
 	        if (abs(iTables.x[iomega]-elas_omega_over_T_neg_max) <= epsilon && iTables.x[iomega] < elas_omega_over_T_pos_min) continue;  
     	    double dx = iTables.x[iomega+1] - iTables.x[iomega]; 
             iTables.total_rate[0][i_total_rate] = iTables.x[iomega+1]; 
-            iTables.total_rate_w[0][i_total_rate] = iTables.x[iomega+1]; 
+            // iTables.total_rate_w[0][i_total_rate] = iTables.x[iomega+1]; 
             if (iomega == 0)
             {
                 iTables.total_rate[1][i_total_rate] = (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2; 
-                iTables.total_rate_w[1][i_total_rate] = (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2 * (iTables.x[iomega] + iTables.x[iomega+1]) / 2; 
+                // iTables.total_rate_w[1][i_total_rate] = (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2 * (iTables.x[iomega] + iTables.x[iomega+1]) / 2; 
             }
             else
             {
                 iTables.total_rate[1][i_total_rate] = iTables.total_rate[1][i_total_rate-1] + (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2;
-                iTables.total_rate_w[1][i_total_rate] = iTables.total_rate_w[1][i_total_rate-1] + (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2 * (iTables.x[iomega] + iTables.x[iomega+1]) / 2;
+                // iTables.total_rate_w[1][i_total_rate] = iTables.total_rate_w[1][i_total_rate-1] + (iTables.y[iomega+1] + iTables.y[iomega]) * dx / 2 * (iTables.x[iomega] + iTables.x[iomega+1]) / 2;
             }
             i_total_rate++; 
 	    }
-        // std::cout << iTables.total_rate[0][i_total_rate-1] << " " << iTables.total_rate[1][i_total_rate-1] << "\n"; 
+        // std::cout << "initial conversion rate " << iTables.total_rate[0][i_total_rate-1] << " " << iTables.total_rate[1][i_total_rate-1] << "\n"; 
+        // std::cout << "initial conversion rate " << iTables.total_rate[0][int(i_total_rate/10)-1] << " " << iTables.total_rate[1][int(i_total_rate/10)-1] << "\n"; 
 	    elasticTable.push_back(iTables); 
     }
     gsl_interp2d_free(interp); 
 }
 
 // Use interpolator for total rate to estimate the rate up to Lambda
-double Tequila::interpolatorElasticTotalRate(double T, process_type process)
+double Tequila::interpolatorElasticTotalRate(double p_eval, double T, process_type process)
 {
     gsl_interp_accel *acc = gsl_interp_accel_alloc ();
     gsl_interp *interp = gsl_interp_alloc (gsl_interp_linear, Nw);
     gsl_interp_init (interp, elasticTable[process].total_rate[0], elasticTable[process].total_rate[1], Nw); 
     double result; 
-    result = gsl_interp_eval (interp, elasticTable[process].total_rate[0], elasticTable[process].total_rate[1], Lambda/2/T, acc);  
+    result = gsl_interp_eval (interp, elasticTable[process].total_rate[0], elasticTable[process].total_rate[1], p_eval, acc);  
     gsl_interp_free (interp); 
     gsl_interp_accel_free (acc); 
     return result * T * pow(g, 4); 
 }
 
 // The interpolation of integral(w*dw)
-double Tequila::interpolatorElasticEnergyLoss(double T, process_type process)
+double Tequila::interpolatorElasticEnergyLoss(double p_eval, double T, process_type process)
 {
     gsl_interp_accel *acc = gsl_interp_accel_alloc ();
     gsl_interp *interp = gsl_interp_alloc (gsl_interp_linear, Nw);
     gsl_interp_init (interp, elasticTable[process].total_rate_w[0], elasticTable[process].total_rate_w[1], Nw); 
     double result; 
-    result = gsl_interp_eval (interp, elasticTable[process].total_rate_w[0], elasticTable[process].total_rate_w[1], Lambda/2/T, acc);  
+    result = gsl_interp_eval (interp, elasticTable[process].total_rate_w[0], elasticTable[process].total_rate_w[1], p_eval, acc);  
     gsl_interp_free (interp); 
     gsl_interp_accel_free (acc); 
     return result * T * T * pow(g, 4); 

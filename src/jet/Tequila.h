@@ -22,10 +22,10 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 	double g;
    	double M = 0.; 
    	double muqperp_over_T;
-        const double eLossCut = 2.;  
+    const double eLossCut = 2.;  
    	// AMY rates are calculated in p/T > AMY_p_over_T_cut
   	static constexpr double AMY_p_over_T_cut = 4.01;
-        static int pLabelNew;
+    static int pLabelNew;
 
   	double Q0;
   	double alpha_EM;
@@ -33,17 +33,17 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
   	double muomega_over_T;
     double qhat_coef; 
 	double Lambda; 
-        int recoil_on;
-        double hydro_tStart; 
-        double pcut;  
+    int recoil_on;
+    double hydro_tStart; 
+    double pcut;  
 
   	const double nc = 3.; 
 	const double ln2 = log(2); 
-        const double epsilon = 1e-8;
-        const double mu_min = 2.; 
-        const double Lambda_qcd = 0.17; 
-        const double alpha_QZ = 0.1185; 
-        const double Q_Z = 90.2; 
+    const double epsilon = 1e-8;
+    const double mu_min = 2.; 
+    const double Lambda_qcd = 0.17; 
+    const double alpha_QZ = 0.1185; 
+    const double Q_Z = 90.2; 
          
 
 	const int Nsteps = 500; 
@@ -149,8 +149,8 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 	virtual ~Tequila();
 
   	void LoadElasticTables(); 
-        double interpolatorElasticTotalRate(double T, process_type process); 
-        double interpolatorElasticEnergyLoss(double T, process_type process); 
+    double interpolatorElasticTotalRate(double p_eval, double T, process_type process); 
+    double interpolatorElasticEnergyLoss(double p_eval, double T, process_type process); 
 	double Interpolator_dGamma_domega(double omega, process_type process); 
 	double Extrapolator_dGamma_domega(double omega, process_type process); 
 	double Interpolator_dGamma_domega_qperp2(double omega, double qperp2, process_type process); 
@@ -166,18 +166,18 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
   	double TransverseMomentum_Transfer(double pRest, double omega, double T, process_type process); 
   	double Energy_Transfer(double pRest, double T, process_type process); 
 	double TransverseMomentum_Transfer_Split(double pRest, double omega, double T, process_type process);
-        double splitdGammadxdqperp2Rate(double deltaE_over_2T);  
+    double splitdGammadxdqperp2Rate(double deltaE_over_2T);  
   	double Energy_Transfer_Split(double pRest, double T, process_type process); 
 	double xSampling(double pRest, double T, process_type process); 
 	double thermalDistributionSampling(process_type process);
-        FourVector getThermalVec(FourVector qVec, double T, int id); 
-        double getThermal(double k_min, double T, int kind); 
+    FourVector getThermalVec(FourVector qVec, double T, int id); 
+    double getThermal(double k_min, double T, int kind); 
   	
   	double qhatpara(double E, double T, int id); 
   	double qhatperp(double E, double T, int id); 
   	FourVector Langevin_Update(double dt, double T, FourVector pIn, int Id); 
 
-        static void IncrementpLabel() {pLabelNew++;}
+    static void IncrementpLabel() {pLabelNew++;}
   	
     protected:
   	uniform_real_distribution<double> ZeroOneDistribution;

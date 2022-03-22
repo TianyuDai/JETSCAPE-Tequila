@@ -60,6 +60,7 @@ class IntTabulator
   	std::string GetProcessString( int enumVal ); 
   	
   	double dGamma_domega_qperp2_forTab(double omega, double qperp2, process_type process); 
+  	double dGamma_domega_qperp_forTab(double omega, double qperp, process_type process); 
   	friend double dGamma_domega_qperp2(double qperp2, void *params); 
   	friend double dGamma_domega_qperp2_k(double k, void *params); 
   	friend double dGamma_domega_qperp2_k_phi_gg(double phi, void *params); 
@@ -70,13 +71,13 @@ class IntTabulator
 	friend double dGamma_domega_qperp2_k_phi_qqb(double phi, void *params); 
 	friend double dGamma_domega_qperp2_k_phi_qqbgg(double phi, void *params); 
 	friend double dGamma_domega_qperp2_k_phi_qqbp(double phi, void *params); 
-	friend double dGamma_domega_qperp2_k_phi_GqQg(double phi, void *params); 
-	friend double dGamma_domega_qperp2_k_phi_QgGq(double phi, void *params); 
-	friend double dGamma_domega_qperp2_k_phi_GgQbq(double phi, void *params); 
-	friend double dGamma_domega_qperp2_k_phi_QbqGg(double phi, void *params); 
+	friend double dGamma_domega_qperp_k_phi_GqQg(double phi, void *params); 
+	friend double dGamma_domega_qperp_k_phi_QgGq(double phi, void *params); 
+	friend double dGamma_domega_qperp_k_phi_GgQbq(double phi, void *params); 
+	friend double dGamma_domega_qperp_k_phi_QbqGg(double phi, void *params); 
 
 	void Tabulator_dGamma_domega_qperp2(std::string path, process_type process); 
-	void Tabulator_omega_dGamma_domega_qperp2(std::string path, process_type process); 
+	void Tabulator_conversion_dGamma_domega_qperp(std::string path, process_type process); 
 	
 }; 
 
@@ -90,10 +91,10 @@ double dGamma_domega_qperp2_k_phi_qqp(double phi, void *params);
 double dGamma_domega_qperp2_k_phi_qqb(double phi, void *params); 
 double dGamma_domega_qperp2_k_phi_qqbgg(double phi, void *params); 
 double dGamma_domega_qperp2_k_phi_qqbp(double phi, void *params); 
-double dGamma_domega_qperp2_k_phi_GqQg(double phi, void *params); 
-double dGamma_domega_qperp2_k_phi_QgGq(double phi, void *params); 
-double dGamma_domega_qperp2_k_phi_GgQbq(double phi, void *params); 
-double dGamma_domega_qperp2_k_phi_QbqGg(double phi, void *params); 
+double dGamma_domega_qperp_k_phi_GqQg(double phi, void *params); 
+double dGamma_domega_qperp_k_phi_QgGq(double phi, void *params); 
+double dGamma_domega_qperp_k_phi_GgQbq(double phi, void *params); 
+double dGamma_domega_qperp_k_phi_QbqGg(double phi, void *params); 
 
 #endif
 
