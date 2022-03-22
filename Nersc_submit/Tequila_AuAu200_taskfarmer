@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -n 48
+#SBATCH -n 32 -c 64
 
 #SBATCH --time=1:00:00
 
