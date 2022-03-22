@@ -52,7 +52,6 @@ void JetScapePartonReader<T>::Next()
   //pShowers.push_back(make_shared<PartonShower>());
   //pShower=pShowers[0];
   //currentShower=1;
-  std::cout << "after string token\n";   
   while (getline(inFile,line))
   {
       strT.set(line); 

@@ -2,12 +2,12 @@
 
 <jetscape>
   
-  <nEvents> 1 </nEvents>
+  <nEvents> 100000 </nEvents>
   <!--setReuseHydro> true </setReuseHydro>
   <nReuseHydro> 100000 </nReuseHydro-->
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
-  <outputFilename>test</outputFilename>
+  <outputFilename>Tequila_brick</outputFilename>
   <vlevel> 0 </vlevel>
   <nEvents_printout> 1 </nEvents_printout>
 
@@ -39,7 +39,7 @@
   <!--Eloss Modules -->
   <Eloss>
 
-    <deltaT>1.</deltaT>
+    <deltaT>0.05</deltaT>
     <formTime> -0.1</formTime>
     <maxT>1.</maxT>
     <!--mutex>ON</mutex-->
