@@ -2,9 +2,9 @@
 
 <jetscape>
   
-  <nEvents> 4000 </nEvents>
+  <nEvents> 40000 </nEvents>
   <setReuseHydro> true </setReuseHydro>
-  <nReuseHydro> 20 </nReuseHydro>
+  <nReuseHydro> 200 </nReuseHydro>
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
   <outputFilename>test_out</outputFilename>
