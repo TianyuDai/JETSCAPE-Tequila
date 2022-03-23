@@ -7,7 +7,7 @@
   <nReuseHydro> 100000 </nReuseHydro-->
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
-  <outputFilename>Tequila_brick</outputFilename>
+  <outputFilename>Tequila_brick_smallHardInelCoupling</outputFilename>
   <vlevel> 0 </vlevel>
   <nEvents_printout> 1 </nEvents_printout>
 
@@ -47,14 +47,16 @@
   
     <Tequila>
       <name> Tequila </name>
-      <alpha_s> 0.3 </alpha_s>
+      <!--alpha_s> 0.3 </alpha_s-->
       <pcut> 2. </pcut>
       <!--Q0> 1.0 </Q0-->
       <!--hydro_Tc> 0.16 </hydro_Tc-->
       <recoil_on> 1 </recoil_on>
       <muomega_over_T> 1. </muomega_over_T>
       <muqperp_over_T> 1. </muqperp_over_T>
-      <qhat_coef> 1. </qhat_coef>
+      <alphas_soft> 0.3 </alphas_soft>
+      <alphas_hard_elas> 0.3 </alphas_hard_elas>
+      <alphas_hard_inel> 0.1 </alphas_hard_inel>
       <path>../src/jet/Tequila/</path>
     </Tequila>
 

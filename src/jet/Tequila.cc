@@ -86,19 +86,24 @@ void Tequila::Init()
     JSDEBUG << s << " to be initilizied ...";
 
     Q0 = GetXMLElementDouble({"Eloss", "Tequila", "Q0"});
-    alpha_s = GetXMLElementDouble({"Eloss", "Tequila", "alpha_s"});
+    alphas_soft = GetXMLElementDouble({"Eloss", "Tequila", "alphas_soft"});
+    alphas_hard_elas = GetXMLElementDouble({"Eloss", "Tequila", "alphas_hard_elas"});
+    alphas_hard_inel = GetXMLElementDouble({"Eloss", "Tequila", "alphas_hard_inel"});
     pcut = GetXMLElementDouble({"Eloss", "Tequila", "pcut"});
     hydro_Tc = GetXMLElementDouble({"Eloss", "Tequila", "hydro_Tc"});
     recoil_on = GetXMLElementInt({"Eloss", "Tequila", "recoil_on"});
 
     muqperp_over_T = GetXMLElementDouble({"Eloss", "Tequila", "muqperp_over_T"});
     muomega_over_T = GetXMLElementDouble({"Eloss", "Tequila", "muomega_over_T"});
-    qhat_coef = GetXMLElementDouble({"Eloss", "Tequila", "qhat_coef"});
+    // qhat_coef = GetXMLElementDouble({"Eloss", "Tequila", "qhat_coef"});
 
     // Path to additional data
     path_to_tables = GetXMLElementText({"Eloss", "Tequila", "path"});
 
-    g = sqrt(4.*M_PI*alpha_s); 
+    g_soft = sqrt(4.*M_PI*alphas_soft); 
+    g_hard_elas = sqrt(4.*M_PI*alphas_hard_elas); 
+    g_hard_inel = sqrt(4.*M_PI*alphas_hard_inel); 
+
     const double alpha_EM=1./137.; //Not currently a parameter
     hydro_tStart = 0.4; 
     ZeroOneDistribution = uniform_real_distribution<double> { 0.0, 1.0 }; 
@@ -113,7 +118,7 @@ void Tequila::Init()
     JSINFO << "Loading differential collinear rate...\n";
     // const std::string location_of_pretabulated_collinear_rates="./Tequila/";
     // Either compute or read from file the collinear differential rates and load them into member array "differential_rate_p_omega_qperp[][][]"
-    load_differential_rate(alpha_s, alpha_EM, nf, path_to_tables);
+    load_differential_rate(alphas_hard_inel, alpha_EM, nf, path_to_tables);
     // Compute total rate from differential rate and save in member array "rate_p[]"
     JSINFO << "Computing integrated collinear rate...\n";
     evaluate_integrated_rate(muomega_over_T, differential_rate_qqg_p_omega_qperp,rate_qqg_p, qqg); 
@@ -486,11 +491,11 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
     {
         process_type process = static_cast<process_type>(i); 
         rate[i] = interpolatorElasticTotalRate(elas_omega_over_T_pos_max*T, T, process); 
-        rate[i] += casimir[i] * pow(g*g*T, 2) / (2*elas_omega_over_T_pos_max*T);
-        rate[i] -= casimir[i] * pow(g*g*T, 2) / Lambda;     // Add the cutoff Lambda
+        rate[i] += casimir[i] * pow(g_hard_elas*g_hard_elas*T, 2) / (2*elas_omega_over_T_pos_max*T);
+        rate[i] -= casimir[i] * pow(g_hard_elas*g_hard_elas*T, 2) / Lambda;     // Add the cutoff Lambda
         rate[i] -= interpolatorElasticEnergyLoss(elas_omega_over_T_pos_max*T, T, process) / pRest;
-        rate[i] -= 1. / 96 / M_PI / pRest * pow(g*g*T, 2) * Toverp_c_ln[i]*log(elas_omega_over_T_pos_max);
-        rate[i] += 1. / 96 / M_PI / pRest * pow(g*g*T, 2) * Toverp_c_ln[i]*log(Lambda/T/2);
+        rate[i] -= 1. / 96 / M_PI / pRest * pow(g_hard_elas*g_hard_elas*T, 2) * Toverp_c_ln[i]*log(elas_omega_over_T_pos_max);
+        rate[i] += 1. / 96 / M_PI / pRest * pow(g_hard_elas*g_hard_elas*T, 2) * Toverp_c_ln[i]*log(Lambda/T/2);
         // rate[i] += casimir[i] * pow(g*g*T, 2) / (2*elas_omega_over_T_pos_max*T); 
         // rate[i] -= casimir[i] * pow(g*g*T, 2) / Lambda; 
     }
@@ -502,8 +507,8 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
         process_type process = static_cast<process_type>(i); 
         rate[i] = interpolatorElasticTotalRate(elas_omega_over_T_pos_max*T, T, process) * T / pRest;
         // JSINFO << "conversion " << rate[i] << "\n"; 
-        rate[i] += 1. / 96 / M_PI * pow(g, 4) * T * Toverp_c_ln[i]*log(elas_omega_over_T_pos_max) * T /pRest;
-        rate[i] -= 1. / 96 / M_PI * pow(g, 4) * T * Toverp_c_ln[i]*log(Lambda/2/T) * T / pRest;
+        rate[i] += 1. / 96 / M_PI * pow(g_hard_elas, 4) * T * Toverp_c_ln[i]*log(elas_omega_over_T_pos_max) * T /pRest;
+        rate[i] -= 1. / 96 / M_PI * pow(g_hard_elas, 4) * T * Toverp_c_ln[i]*log(Lambda/2/T) * T / pRest;
         // JSINFO << "coef " << g << " " << Toverp_c_ln[i] << " " << Lambda << " " << log(elas_omega_over_T_pos_max) << "\n"; 
     }
     // JSINFO << "rate GqQg " << rate[GqQg] << " QbqGg " << rate[QbqGg] << "\n"; 
@@ -512,9 +517,9 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
     {	
         rate[i] = splitting_c_lambda[i - gg_split]*pRest/Lambda + splitting_c_p[i - gg_split] + splitting_c_ln[i - gg_split]*log(2*pRest/Lambda); 
         if (i == gg_split || i == qg_split)
-            rate[i] *= pow(g, 4)*pow(T, 2)/96/M_PI/pRest;
+            rate[i] *= pow(g_hard_elas, 4)*pow(T, 2)/96/M_PI/pRest;
         else
-            rate[i] *= pow(g, 4)*pow(T, 2)/1536/M_PI/pRest;
+            rate[i] *= pow(g_hard_elas, 4)*pow(T, 2)/1536/M_PI/pRest;
         // rate[i] *= pow(g, 4)*pow(T, 2)/M_PI/pRest; 
     }
 
@@ -758,11 +763,11 @@ double Tequila::qhatpara(double E, double T, int id)
     if (id == 21) CR = CA; 
     else if (std::abs(id) == 1 || std::abs(id) == 2 || std::abs(id) == 3) CR = CF; 
     else {JSWARN << "Strange particle! ID = " << id; CR = CF; }
-    double mD = sqrt(std::pow(g*T, 2)*(nc/3. + nf/6.)); 
+    double mD = sqrt(std::pow(g_soft*T, 2)*(nc/3. + nf/6.)); 
     double Minf = sqrt(pow(mD, 2)/2.); 
-    double qpara_elas = std::pow(g*Minf, 2)*CR*T/(2.*M_PI)*log(1.+pow(muqperp_over_T*T/Minf, 2))/2.; 
-    double qpara_inel = std::pow(g, 4)*CR*CA*std::pow(T, 3)*muomega_over_T*(2-ln2)/(4.*std::pow(M_PI, 3)); 
-    return (qpara_elas+qpara_inel)*qhat_coef; 
+    double qpara_elas = std::pow(g_soft*Minf, 2)*CR*T/(2.*M_PI)*log(1.+pow(muqperp_over_T*T/Minf, 2))/2.; 
+    double qpara_inel = std::pow(g_soft, 4)*CR*CA*std::pow(T, 3)*muomega_over_T*(2-ln2)/(4.*std::pow(M_PI, 3)); 
+    return qpara_elas + qpara_inel; 
 }
 
 double Tequila::qhatperp(double E, double T, int id)
@@ -771,10 +776,10 @@ double Tequila::qhatperp(double E, double T, int id)
     if (id == 21) CR = CA; 
     else if (std::abs(id) == 1 || std::abs(id) == 2 || std::abs(id) == 3) CR = CF; 
     else {JSWARN << "Strange particle! ID = " << id; CR = CF; }
-    double mD = sqrt(std::pow(g*T, 2)*(nc/3. + nf/6.));
-    double qperp_elas = std::pow(g*mD, 2) * CR * T / (2.*M_PI) * log(1.+pow(muqperp_over_T*T/mD, 2))/2.; 
+    double mD = sqrt(std::pow(g_soft*T, 2)*(nc/3. + nf/6.));
+    double qperp_elas = std::pow(g_soft*mD, 2) * CR * T / (2.*M_PI) * log(1.+pow(muqperp_over_T*T/mD, 2))/2.; 
     double qperp_inel = 0.;  
-    return (qperp_elas+qperp_inel)*qhat_coef;
+    return qperp_elas + qperp_inel;
 }
 
 FourVector Tequila::Langevin_Update(double dt, double T, FourVector pIn, int id)
@@ -998,7 +1003,7 @@ double Tequila::splittingF(double x, process_type process)
 
 double Tequila::splittingRateOmega(double pRest, double x, double T, process_type process)
 {
-	return pow(g, 4)*pow(T, 2)/(96.*8.*M_PI*pow(pRest, 2)) * splittingF(x, process); 
+	return pow(g_hard_elas, 4)*pow(T, 2)/(96.*8.*M_PI*pow(pRest, 2)) * splittingF(x, process); 
 }
 
 void Tequila::LoadElasticTables()
@@ -1142,7 +1147,7 @@ double Tequila::interpolatorElasticTotalRate(double p_eval, double T, process_ty
     result = gsl_interp_eval (interp, elasticTable[process].total_rate[0], elasticTable[process].total_rate[1], p_eval, acc);  
     gsl_interp_free (interp); 
     gsl_interp_accel_free (acc); 
-    return result * T * pow(g, 4); 
+    return result * T * pow(g_hard_elas, 4); 
 }
 
 // The interpolation of integral(w*dw)
@@ -1155,7 +1160,7 @@ double Tequila::interpolatorElasticEnergyLoss(double p_eval, double T, process_t
     result = gsl_interp_eval (interp, elasticTable[process].total_rate_w[0], elasticTable[process].total_rate_w[1], p_eval, acc);  
     gsl_interp_free (interp); 
     gsl_interp_accel_free (acc); 
-    return result * T * T * pow(g, 4); 
+    return result * T * T * pow(g_hard_elas, 4); 
 }
 
 double Tequila::Interpolator_dGamma_domega(double omega, process_type process)
@@ -1540,7 +1545,7 @@ double Tequila::differential_rate(const double p_over_T, const double omega_over
 
 	double res=v0*(1-frac_p_over_T)+v1*frac_p_over_T;
         double Q = max(omega_over_T*T, mu_min); 
-        res *= pow(alpha_QZ*log(Q_Z/Lambda_qcd)/log(Q/Lambda_qcd), 2)/pow(alpha_s, 2); 
+        res *= pow(alpha_QZ*log(Q_Z/Lambda_qcd)/log(Q/Lambda_qcd), 2)/pow(alphas_hard_inel, 2); 
 	return res;
 
 }
