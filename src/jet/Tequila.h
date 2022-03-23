@@ -18,8 +18,12 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 {
     static Pythia8::Pythia InternalHelperPythia;
     private: 
-        double alpha_s;
-	double g;
+    double alphas_soft;
+    double alphas_hard_elas;
+    double alphas_hard_inel;
+	double g_soft;
+	double g_hard_elas;
+	double g_hard_inel;
    	double M = 0.; 
    	double muqperp_over_T;
     const double eLossCut = 2.;  
@@ -31,7 +35,7 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
   	double alpha_EM;
   	double hydro_Tc;
   	double muomega_over_T;
-    double qhat_coef; 
+    // double qhat_coef; 
 	double Lambda; 
     int recoil_on;
     double hydro_tStart; 
