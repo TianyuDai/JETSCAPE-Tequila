@@ -54,9 +54,9 @@
       <recoil_on> 1 </recoil_on>
       <muomega_over_T> 1. </muomega_over_T>
       <muqperp_over_T> 1. </muqperp_over_T>
-      <alphas_soft> 0.3 </alphas_soft>
+      <alphas_soft> 0.8 </alphas_soft>
       <alphas_hard_elas> 0.3 </alphas_hard_elas>
-      <alphas_hard_inel> 0.1 </alphas_hard_inel>
+      <alphas_hard_inel> 0.3 </alphas_hard_inel>
       <path>../src/jet/Tequila/</path>
     </Tequila>
 

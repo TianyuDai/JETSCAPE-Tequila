@@ -256,10 +256,11 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
       	else if (process == gg || process == gq || process == qg || process == qq || process == qqp || process == qqb)
       	{
       	    omega = Energy_Transfer(pRest, T, process); 
-	        qperp = TransverseMomentum_Transfer(pRest, omega, T, process);
-	        // qperp = 0.1;
+	    qperp = TransverseMomentum_Transfer(pRest, omega, T, process);
+	    // qperp = 0.1;
             pVecRestNew = Momentum_Update(omega, qperp, T, pVecRest); 
-            pRestNew = pVecRestNew.t(); 
+            pRestNew = pVecRestNew.t();
+            /* 
             if (recoil_on)
             {
                 qVec = FourVector(pVecRest.x()-pVecRestNew.x(), pVecRest.y()-pVecRestNew.y(), pVecRest.z()-pVecRestNew.z(), pVecRest.t()-pVecRestNew.t()); 
@@ -288,7 +289,7 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
                     else IdNew = -1 * ((abs(Id) + 2) % 3 + 1); 
                 }
                 pStatNew = 1; 
-            }
+            }*/
         }
       	else if (process == GqQg || process == GgQbq)
       	{
@@ -307,10 +308,10 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
       	else if (process == QgGq || process == QbqGg)
       	{
       	    omega = Energy_Transfer(pRest, T, process)*T; 
-	        qperp = 0.; 
-	        pVecRestNew = Momentum_Update(omega, qperp, T, pVecRest);
+	    qperp = 0.; 
+	    pVecRestNew = Momentum_Update(omega, qperp, T, pVecRest);
             Id = 21;  
-	    }
+	}
         else if (process == gg_split || process == gq_split || process == qg_split || process == qq_split || process == qqp_split || process == qqb_split)
         {
             double x = xSampling(pRest, T, process); 
@@ -453,6 +454,7 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
                 pOut[pOut.size()-1].set_jet_v(velocity_jet);
             }
        }
+       
         // push the recoil parton back into the parton list
        if (pRecoilRest > epsilon) 
        {
@@ -543,8 +545,8 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
             totalQuarkProb += rate[qqg]*dt;
         totalQuarkProb += (rate[qg] + rate[qq] + rate[qqp] + rate[qqb] + rate[qg_split] + rate[qq_split] + rate[qqp_split] + rate[qqb_split]) * dt; 
         // warn if total probability exceeds 0.2
-        if (totalQuarkProb > 0.6)
-            JSWARN << " : Total Probability for quark processes exceeds 0.6 (" << totalQuarkProb << "). " << " : Most likely this means you should choose a smaller deltaT in the xml (e.g. 0.01)."; 	
+        if (totalQuarkProb > 1.)
+            JSWARN << " : Total Probability for quark processes exceeds 1 (" << totalQuarkProb << "). " << " : Most likely this means you should choose a smaller deltaT in the xml (e.g. 0.01)."; 	
 	
         double accumProb = 0.; 
         double nextProb = 0.; 
@@ -609,8 +611,8 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
         if (pRest/T > AMY_p_over_T_cut) 
             totalGluonProb += (rate[gqq] + rate[ggg])*dt;
         totalGluonProb += (rate[gg] + rate[gq] + rate[gg_split] + rate[gq_split]) * dt; 
-        if (totalGluonProb > 0.6)
-            JSWARN << " : Total Probability for gluon processes exceeds 0.6 (" << totalGluonProb << "). " << " : Most likely this means you should choose a smaller deltaT in the xml (e.g. 0.01)."; 
+        if (totalGluonProb > 1.)
+            JSWARN << " : Total Probability for gluon processes exceeds 1 (" << totalGluonProb << "). " << " : Most likely this means you should choose a smaller deltaT in the xml (e.g. 0.01)."; 
 
         double accumProb = 0.; 
         double nextProb = 0.; 
