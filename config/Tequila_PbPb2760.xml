@@ -2,9 +2,9 @@
 
 <jetscape>
   
-  <nEvents> 4000 </nEvents>
+  <nEvents> 40000 </nEvents>
   <setReuseHydro> true </setReuseHydro>
-  <nReuseHydro> 20 </nReuseHydro>
+  <nReuseHydro> 100 </nReuseHydro>
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
   <outputFilename>test_out</outputFilename>
@@ -16,7 +16,7 @@
   </Random>
   <!-- Inital State Module  -->
   <IS>
-    <initial_profile_path>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</initial_profile_path>
+    <initial_profile_path>/global/cscratch1/sd/td115/VISHNew_PbPb2760/0-10_centrality</initial_profile_path>
   </IS>
   
   <!-- Hard Process -->
@@ -25,7 +25,7 @@
       <FSR_on>0</FSR_on>
       <pTHatMin>60</pTHatMin>
       <pTHatMax>80</pTHatMax>
-      <eCM>200</eCM>
+      <eCM>2760</eCM>
       <useHybridHad>0</useHybridHad>
       <LinesToRead>
 	PDF:useHardNPDFA = on
@@ -54,7 +54,7 @@
       <name>Hydro from file </name>
       <read_in_multiple_hydro>1</read_in_multiple_hydro>
       <boost_invariant_> 1</boost_invariant_> 
-      <hydro_files_folder>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</hydro_files_folder>
+      <hydro_files_folder>/global/cscratch1/sd/td115/VISHNew_PbPb2760/0-10_centrality</hydro_files_folder>
     </hydro_from_file>
   </Hydro>
   
@@ -104,7 +104,7 @@
   <JetHadronization>
     <name>colorless</name>
     <take_recoil>1</take_recoil>
-    <eCMforHadronization>100</eCMforHadronization>
+    <eCMforHadronization>1380</eCMforHadronization>
   </JetHadronization>
   
 </jetscape>
