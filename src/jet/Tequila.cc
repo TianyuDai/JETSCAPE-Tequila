@@ -169,6 +169,8 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
     FourVector qVec; 
     for (int i=0;i<pIn.size();i++)
     {
+        // IntTabulator inttabulator; 
+        // std::cout << inttabulator.running_coupling(2*0.3, 6.*0.3) << "\n"; 
         // Reject photons
         if (pIn[i].pid()==photonid)
             continue;
@@ -250,7 +252,7 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
         velocity_jet[2]=pIn[i].jet_v().y();
         velocity_jet[3]=pIn[i].jet_v().z();
         
-        IntTabulator inttabulator;
+        // IntTabulator inttabulator;
         if (process == none)
       	    pVecRestNew = pVecRest;
       	else if (process == gg || process == gq || process == qg || process == qq || process == qqp || process == qqb)
@@ -501,7 +503,7 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
         // rate[i] += casimir[i] * pow(g*g*T, 2) / (2*elas_omega_over_T_pos_max*T); 
         // rate[i] -= casimir[i] * pow(g*g*T, 2) / Lambda; 
     }
-    // JSINFO << "rate gg " << rate[gg] << " rate gq " << rate[gq] << " rate qg " << rate[qg] << " rate qq " << rate[qq] << " rate qqb " << rate[qqb]; 
+    JSINFO << "rate gg " << rate[gg] << " rate gq " << rate[gq] << " rate qg " << rate[qg] << " rate qq " << rate[qq] << " rate qqb " << rate[qqb] << " rate qqp " << rate[qqp] << "\n"; 
     // std::cout << "gg " << rate[gg] << " gq " << rate[gq] << " qg " << rate[qg] << " qqp " << rate[qqp] << " qqb " << rate[qqb] << " GqQg " << rate[GqQg] << " QgGq " << rate[QgGq] << " GgQbq " << rate[GgQbq] << " QbqGg " << rate[QbqGg] << "\n"; 
 
     for (int i = GqQg; i <= QbqGg; i++)
@@ -513,7 +515,7 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
         rate[i] -= 1. / 96 / M_PI * pow(g_hard_elas, 4) * T * Toverp_c_ln[i]*log(Lambda/2/T) * T / pRest;
         // JSINFO << "coef " << g << " " << Toverp_c_ln[i] << " " << Lambda << " " << log(elas_omega_over_T_pos_max) << "\n"; 
     }
-    // JSINFO << "rate GqQg " << rate[GqQg] << " QbqGg " << rate[QbqGg] << "\n"; 
+    JSINFO << "rate GqQg " << rate[GqQg] << " QbqGg " << rate[QbqGg] << " QgGq " << rate[QgGq] << " GgQbq " << rate[GgQbq] << "\n"; 
 
     for (int i = gg_split; i <= qqb_split; i++)
     {	
@@ -1008,6 +1010,16 @@ double Tequila::splittingRateOmega(double pRest, double x, double T, process_typ
 	return pow(g_hard_elas, 4)*pow(T, 2)/(96.*8.*M_PI*pow(pRest, 2)) * splittingF(x, process); 
 }
 
+double Tequila::running_coupling(double Q, double mu_med)
+{
+    double g_running, alpha_s, lambda_QCD=0.2; 
+    // double mu_med = 8.*0.3; 
+    // alpha_s = 4.*M_PI/9/std::log(std::pow(std::max(Q, mu_med), 2)/pow(lambda_QCD, 2));
+    alpha_s = 0.3; 
+    g_running = std::sqrt(4.*M_PI*alpha_s); 
+    return g_running;  
+}
+
 void Tequila::LoadElasticTables()
 {
     IntTabulator inttabulator; 
@@ -1019,6 +1031,8 @@ void Tequila::LoadElasticTables()
         process_type process = static_cast<process_type>(iProcess); 
         tables iTables; 
 
+        // if (!is_exist((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+"_runningCoupling.dat").c_str())) inttabulator.Tabulator_dGamma_domega_qperp2(path_to_tables, process); 
+        // std::ifstream table2d_in((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+"_runningCoupling.dat").c_str()); 
         if (!is_exist((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+".dat").c_str())) inttabulator.Tabulator_dGamma_domega_qperp2(path_to_tables, process); 
         std::ifstream table2d_in((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+".dat").c_str()); 
         if (is_empty(table2d_in)) inttabulator.Tabulator_dGamma_domega_qperp2(path_to_tables, process); 
@@ -1033,7 +1047,8 @@ void Tequila::LoadElasticTables()
             {
                 iTables.ya[iqperp] = pow(exp(((double)iqperp)*(log(elas_qperp_over_T_max)-log(muqperp_over_T_0))/Nq+log(muqperp_over_T_0)), 2); 
                 table2d_in >> z;
-                iTables.rate_qperp2[iomega][iqperp] = z;
+                double g_running = running_coupling(iTables.ya[iqperp]*T, 8.*T); 
+                iTables.rate_qperp2[iomega][iqperp] = z * pow(g_running, 4);
                 gsl_interp2d_set(interp, &za[iProcess*(Nw+2)*(Nq+1)], iomega, iqperp, log(z)); 
             }
         }
@@ -1082,6 +1097,8 @@ void Tequila::LoadElasticTables()
         process_type process = static_cast<process_type>(iProcess); 
         tables iTables; 
         std::cout << "i process is " << iProcess << "\n"; 
+	    // if (!is_exist((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+"_runningCoupling.dat").c_str())) inttabulator.Tabulator_conversion_dGamma_domega_qperp(path_to_tables, process); 
+	    // std::ifstream table2d_in_2((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+"_runningCoupling.dat").c_str()); 
 	    if (!is_exist((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+".dat").c_str())) inttabulator.Tabulator_conversion_dGamma_domega_qperp(path_to_tables, process); 
 	    std::ifstream table2d_in_2((path_to_tables+"elastic_rate_table"+inttabulator.GetProcessString(process)+".dat").c_str()); 
 	    if (is_empty(table2d_in_2)) inttabulator.Tabulator_conversion_dGamma_domega_qperp(path_to_tables, process); 
@@ -1149,7 +1166,8 @@ double Tequila::interpolatorElasticTotalRate(double p_eval, double T, process_ty
     result = gsl_interp_eval (interp, elasticTable[process].total_rate[0], elasticTable[process].total_rate[1], p_eval, acc);  
     gsl_interp_free (interp); 
     gsl_interp_accel_free (acc); 
-    return result * T * pow(g_hard_elas, 4); 
+    // return result * T * pow(g_hard_elas, 4); 
+    return result * T; 
 }
 
 // The interpolation of integral(w*dw)
@@ -1162,7 +1180,8 @@ double Tequila::interpolatorElasticEnergyLoss(double p_eval, double T, process_t
     result = gsl_interp_eval (interp, elasticTable[process].total_rate_w[0], elasticTable[process].total_rate_w[1], p_eval, acc);  
     gsl_interp_free (interp); 
     gsl_interp_accel_free (acc); 
-    return result * T * T * pow(g_hard_elas, 4); 
+    // return result * T * T * pow(g_hard_elas, 4); 
+    return result * T * T; 
 }
 
 double Tequila::Interpolator_dGamma_domega(double omega, process_type process)

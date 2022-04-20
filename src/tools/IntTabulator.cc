@@ -33,7 +33,15 @@ std::string IntTabulator::GetProcessString(int enumVal)
 {
   	return ProcessStrings[enumVal];
 }
-
+/*
+double IntTabulator::running_coupling(double Q)
+{
+    double alpha_s, lambda_QCD=0.2; 
+    double mu_med = 8.*0.3; 
+    alpha_s = 4.*M_PI/9/std::log(std::pow(std::max(Q, mu_med), 2)/pow(lambda_QCD, 2));
+    return alpha_s;  
+}
+*/
 double IntTabulator::dGamma_domega_qperp2_forTab(double omega, double qperp2, process_type process)
 {
 	struct f_params p; 

@@ -71,6 +71,8 @@ struct fourvec {
   fourvec operator*(fourvec B){
     return fourvec{a[0]*B.t(),a[1]*B.x(),a[2]*B.y(),a[3]*B.z()};
   }
+  
+  // double running(double Q, double )
   fourvec boost_to(double vx, double vy, double vz) const{
   	double v2 = std::max(vx*vx + vy*vy + vz*vz, tiny_v2);
   	double gamma = 1./std::sqrt(1. - v2);

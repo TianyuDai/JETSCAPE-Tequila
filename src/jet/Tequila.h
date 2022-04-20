@@ -159,7 +159,8 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 	double Extrapolator_dGamma_domega(double omega, process_type process); 
 	double Interpolator_dGamma_domega_qperp2(double omega, double qperp2, process_type process); 
 	double splittingF(double x, process_type process); 
-	double splittingRateOmega(double pRest, double x, double T, process_type process); 
+	double splittingRateOmega(double pRest, double x, double T, process_type process);
+    double running_coupling(double Q, double mu_med);  
 	// double splittingRateQperp(double pRest, double qperp, double omega, double T, process_type process); 
 
   	void Init();

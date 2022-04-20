@@ -58,6 +58,7 @@ class IntTabulator
    	virtual ~IntTabulator();
   	
   	std::string GetProcessString( int enumVal ); 
+    // double running_coupling(double Q); 
   	
   	double dGamma_domega_qperp2_forTab(double omega, double qperp2, process_type process); 
   	double dGamma_domega_qperp_forTab(double omega, double qperp, process_type process); 
