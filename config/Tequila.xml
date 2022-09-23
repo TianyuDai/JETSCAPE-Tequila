@@ -2,13 +2,13 @@
 
 <jetscape>
   
-  <nEvents> 1 </nEvents>
+  <nEvents> 100000 </nEvents>
   <!--setReuseHydro> true </setReuseHydro>
   <nReuseHydro> 100000 </nReuseHydro-->
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
   <!--outputFilename>Tequila_brick_1fm_fixedCoupling</outputFilename-->
-  <outputFilename>test</outputFilename>
+  <outputFilename>Tequila_runningCoupling_all_beta2</outputFilename>
   <vlevel> 0 </vlevel>
   <nEvents_printout> 1 </nEvents_printout>
 
@@ -40,7 +40,7 @@
   <!--Eloss Modules -->
   <Eloss>
 
-    <deltaT>1.</deltaT>
+    <deltaT>0.01</deltaT>
     <formTime> -0.1</formTime>
     <maxT>1.</maxT>
     <!--mutex>ON</mutex-->
@@ -50,14 +50,17 @@
       <name> Tequila </name>
       <!--alpha_s> 0.3 </alpha_s-->
       <pcut> 2. </pcut>
-      <!--Q0> 1.0 </Q0-->
-      <!--hydro_Tc> 0.16 </hydro_Tc-->
+      <Q0> 1.0 </Q0>
+      <hydro_Tc> 0.3 </hydro_Tc>
       <recoil_on> 1 </recoil_on>
-      <muomega_over_T> 1. </muomega_over_T>
-      <muqperp_over_T> 1. </muqperp_over_T>
-      <alphas_soft> 0.3 </alphas_soft>
-      <alphas_hard_elas> 0.3 </alphas_hard_elas>
-      <alphas_hard_inel> 0.3 </alphas_hard_inel>
+      <muomega_over_T> 4. </muomega_over_T>
+      <muqperp_over_T> 4. </muqperp_over_T>
+      <beta_1> 2 </beta_1>
+      <beta_2> 2 </beta_2>
+      <beta_3> 2 </beta_3>
+      <T_star> 0.18 </T_star> 
+      <!--alphas_hard_elas> 0.3 </alphas_hard_elas-->
+      <alphas_hard_inel> 0.1 </alphas_hard_inel>
       <path>../src/jet/Tequila/</path>
     </Tequila>
 
