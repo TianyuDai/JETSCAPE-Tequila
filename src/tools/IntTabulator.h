@@ -18,7 +18,7 @@ const static size_t Nw = 500; // number of sites in omega grid in tabulator
 const static size_t Np = 500;
 const static size_t NT = 50;
 
-const double elas_omega_over_T_pos_max = 8.; 
+const double elas_omega_over_T_pos_max = 13.; 
 const double elas_omega_over_T_pos_min = 1.e-2; 
 const double elas_omega_over_T_neg_max = -1.e-2; 
 const double elas_omega_over_T_neg_min = -2.; // should choose to be -2. The rate at min elas w/T is about 10 times smaller than that at max elas w/T. 
@@ -28,7 +28,7 @@ const double elas_pRest_min = 2.;
 const double split_omega_max = 400.; 
 const double split_omega_min = 0.6;
 const double elas_T_max = 0.6; 
-const double elas_T_min = 0.18;  
+const double elas_T_min = 0.16;  
 // const double elas_qperp_over_T_max = 2*sqrt(elas_omega_over_T_pos_max*elas_omega_over_T_pos_max+elas_omega_over_T_pos_max*elas_omega_over_T_neg_min); 
 const double elas_qperp_over_T_max = 40.; 
 // const double muqperp_over_T_0 = 0.08;

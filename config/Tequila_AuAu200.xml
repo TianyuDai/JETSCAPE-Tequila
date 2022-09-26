@@ -2,7 +2,7 @@
 
 <jetscape>
   
-  <nEvents> 4000 </nEvents>
+  <nEvents> 20 </nEvents>
   <setReuseHydro> true </setReuseHydro>
   <nReuseHydro> 20 </nReuseHydro>
   
@@ -16,7 +16,8 @@
   </Random>
   <!-- Inital State Module  -->
   <IS>
-    <initial_profile_path>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</initial_profile_path>
+    <!--initial_profile_path>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</initial_profile_path-->
+    <initial_profile_path>/home/td115/research/JETSCAPE3/hydro_files</initial_profile_path>
   </IS>
   
   <!-- Hard Process -->
@@ -28,8 +29,8 @@
       <eCM>200</eCM>
       <useHybridHad>0</useHybridHad>
       <LinesToRead>
-	PDF:useHardNPDFA = on
-	PDF:useHardNPDFB = on
+        PDF:useHardNPDFA = on
+        PDF:useHardNPDFB = on
         PDF:nPDFSetA = 1
         PDF:nPDFSetB = 1
       </LinesToRead>
@@ -54,14 +55,15 @@
       <name>Hydro from file </name>
       <read_in_multiple_hydro>1</read_in_multiple_hydro>
       <boost_invariant_> 1</boost_invariant_> 
-      <hydro_files_folder>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</hydro_files_folder>
+      <!--hydro_files_folder>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</hydro_files_folder-->
+      <hydro_files_folder>/home/td115/research/JETSCAPE3/hydro_files</hydro_files_folder>
     </hydro_from_file>
   </Hydro>
   
   <!--Eloss Modules -->
   <Eloss>
 
-    <deltaT>0.05</deltaT>
+    <deltaT>0.5</deltaT>
     <formTime> -0.1</formTime>
     <maxT>250</maxT>
     <tStart> 0.6 </tStart> <!-- Start time of jet quenching, proper time, fm/c   -->
@@ -90,11 +92,14 @@
       <Q0> 2.0 </Q0>
       <hydro_Tc> 0.16 </hydro_Tc>
       <recoil_on> 1 </recoil_on>
-      <muomega_over_T> 1. </muomega_over_T>
-      <muqperp_over_T> 1. </muqperp_over_T>
-      <alphas_soft> 0.3 </alphas_soft>
-      <alphas_hard_elas> 0.3 </alphas_hard_elas>
-      <alphas_hard_inel> 0.3 </alphas_hard_inel>
+      <muomega_over_T> 4. </muomega_over_T>
+      <muqperp_over_T> 4. </muqperp_over_T>
+      <beta_1> 2 </beta_1>
+      <beta_2> 2 </beta_2>
+      <beta_3> 2 </beta_3>
+      <T_star> 0.18 </T_star> 
+      <!--alphas_hard_elas> 0.3 </alphas_hard_elas-->
+      <alphas_hard_inel> 0.1 </alphas_hard_inel>
       <path>../src/jet/Tequila/</path>
     </Tequila>
 
