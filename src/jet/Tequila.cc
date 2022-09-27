@@ -262,8 +262,10 @@ void Tequila::DoEnergyLoss(double deltaT, double Time, double Q2, vector<Parton>
       	// time step should be in the rest frame. 
         double deltaTRest = deltaT / gamma; 
         Lambda = std::min({pRest, 2.*T*elas_omega_over_T_pos_max, 2.*sqrt(3.*pRest*T), 2.*pcut});
+	std::cout << "Lambda is " << Lambda << " " << pcut << "\n"; 
 
         process_type process = DetermineProcess(pRest, T, deltaTRest, Id);
+	std::cout << "process is " << process << "\n"; 
 
         // std::cout << "process is " << process << "\n"; 
 
@@ -547,7 +549,9 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
     {
         process_type process = static_cast<process_type>(i); 
         // rate[i] = interpolatorElasticTotalRate(elas_omega_over_T_pos_max*T, T, process);
+	std::cout << "T is " << Lambda/T/2 << " " << T << "\n"; 
         rate[i] = interpolatorElasticTotalRate(Lambda/T/2, T, process) * T;
+	std::cout << "gg rate\n";  
         // rate[i] = interpolatorElasticTotalRate2d(Lambda, T, process);
         // std::cout << "rate " << i << interpolatorElasticTotalRate(3., T, process) << " " << elasticTable[process].total_rate[1][Nw] << "\n";  
         // rate[i] = elasticTable[process].total_rate * T;
