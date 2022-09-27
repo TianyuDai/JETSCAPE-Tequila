@@ -549,9 +549,7 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
     {
         process_type process = static_cast<process_type>(i); 
         // rate[i] = interpolatorElasticTotalRate(elas_omega_over_T_pos_max*T, T, process);
-	std::cout << "T is " << Lambda/T/2 << " " << T << "\n"; 
-        rate[i] = interpolatorElasticTotalRate(Lambda/T/2, T, process) * T;
-	std::cout << "gg rate\n";  
+        rate[i] = interpolatorElasticTotalRate2d(Lambda/T/2, T, process) * T;
         // rate[i] = interpolatorElasticTotalRate2d(Lambda, T, process);
         // std::cout << "rate " << i << interpolatorElasticTotalRate(3., T, process) << " " << elasticTable[process].total_rate[1][Nw] << "\n";  
         // rate[i] = elasticTable[process].total_rate * T;
@@ -572,7 +570,7 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
     {
         process_type process = static_cast<process_type>(i); 
         // rate[i] = interpolatorElasticTotalRate(elas_omega_over_T_pos_max, process) * T * T / pRest;
-        rate[i] = interpolatorElasticTotalRate(Lambda/T/2, T, process) * T * T / pRest;
+        rate[i] = interpolatorElasticTotalRate2d(Lambda/T/2, T, process) * T * T / pRest;
         // rate[i] = elasticTable[process].total_rate * T * T / pRest;
         // JSINFO << "conversion basic " << rate[i] << "\n"; 
         // JSINFO << "conversion " << rate[i] << "\n"; 
@@ -592,8 +590,8 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
             rate[i] *= pow(g_hard_elas, 4)*pow(T, 2)/1536/M_PI/pRest;
         // rate[i] *= pow(g, 4)*pow(T, 2)/M_PI/pRest; */
       
-        process_type process = static_cast<process_type>(i); 
-        rate[i] = interpolatorSplitTotalRate(pRest, T, process);
+        process_type process = static_cast<process_type>(i);
+        rate[i] = interpolatorSplitTotalRate2d(pRest, T, process);
         // rate[i] = elasticTable[process].total_rate[1][Nw] * T; 
         // rate[i] = elasticTable[process].total_rate * T; 
     }
@@ -684,7 +682,7 @@ process_type Tequila::DetermineProcess(double pRest, double T, double deltaTRest
         double totalGluonProb = 0.; 
         if (pRest/T > AMY_p_over_T_cut) 
             totalGluonProb += (rate[gqq] + rate[ggg])*dt;
-        totalGluonProb += (rate[gg] + rate[gq] + rate[gg_split] + rate[gq_split]) * dt; 
+        totalGluonProb += (rate[gg] + rate[gq] + rate[gg_split] + rate[gq_split]) * dt;
         if (totalGluonProb > 1.)
             JSWARN << " : Total Probability for gluon processes exceeds 1 (" << totalGluonProb << "). " << " : Most likely this means you should choose a smaller deltaT in the xml (e.g. 0.01)."; 
 
@@ -841,7 +839,7 @@ double Tequila::qhatpara(double E, double T, int id)
     else {JSWARN << "Strange particle! ID = " << id; CR = CF; }
     double g_soft = running_coupling(2.*M_PI*std::max(T, T_star)/T, T);
     // std::cout << "g soft compare " << running_coupling(2.*M_PI*0.16/0.16, 0.16) << " " << std::sqrt(4.*M_PI*0.3) << "\n"; 
-    g_soft = std::sqrt(4.*M_PI*0.3);  
+    // g_soft = std::sqrt(4.*M_PI*0.3);  
     double mD = sqrt(std::pow(g_soft*T, 2)*(nc/3. + nf/6.)); 
     double Minf = sqrt(pow(mD, 2)/2.); 
     double qpara_elas = std::pow(g_soft*Minf, 2)*CR*T/(2.*M_PI)*log(1.+pow(muqperp_over_T*T/Minf, 2))/2.; 
@@ -858,7 +856,7 @@ double Tequila::qhatperp(double E, double T, int id)
     else if (std::abs(id) == 1 || std::abs(id) == 2 || std::abs(id) == 3) CR = CF; 
     else {JSWARN << "Strange particle! ID = " << id; CR = CF; }
     double g_soft = running_coupling(2.*M_PI*std::max(T, T_star)/T, T); 
-    g_soft = std::sqrt(4.*M_PI*0.3);  
+    // g_soft = std::sqrt(4.*M_PI*0.3);  
     double mD = sqrt(std::pow(g_soft*T, 2)*(nc/3. + nf/6.));
     double qperp_elas = std::pow(g_soft*mD, 2) * CR * T / (2.*M_PI) * log(1.+pow(muqperp_over_T*T/mD, 2))/2.; 
     double qperp_inel = 0.;  
@@ -1152,6 +1150,7 @@ void Tequila::LoadElasticTables()
             {
                 if (abs(iTables.w[iomega]-elas_omega_over_T_neg_max) <= epsilon && iTables.w[iomega] < elas_omega_over_T_pos_min) continue;  
                 double dw = iTables.w[iomega+1] - iTables.w[iomega];
+                iTables.w_tmp[iomega] = (iTables.w[iomega+1] + iTables.w[iomega]) / 2; 
                 // iTables.total_rate[0][i_total_rate] = iTables.w[iomega+1]; 
                 // iTables.total_rate_w[0][i_total_rate] = iTables.w[iomega+1]; 
                 if (iomega == 0)
@@ -1204,6 +1203,7 @@ void Tequila::LoadElasticTables()
             {
                 if (abs(iTables.w[iomega]-elas_omega_over_T_neg_max) <= epsilon && iTables.w[iomega] < elas_omega_over_T_pos_min) continue;  
                 double dw = iTables.w[iomega+1] - iTables.w[iomega];
+                iTables.w_tmp[iomega] = (iTables.w[iomega+1] + iTables.w[iomega]) / 2; 
                 if (i_total_rate == 0)
                 {
                     iTables.total_rate[iT][i_total_rate] = (iTables.dGdw[iT][iomega+1] + iTables.dGdw[iT][iomega]) * dw / 2;
@@ -1237,7 +1237,8 @@ void Tequila::LoadElasticTables()
             iTables_split.T_tmp[iT] = T_i; 
             for (size_t ip = 0; ip <= Np; ip++)
             {
-                double p_i = ((double)ip)*(elas_pRest_max-elas_pRest_min)/Np+elas_pRest_min; 
+                double p_i = ((double)ip)*(sqrt(elas_pRest_max)-sqrt(elas_pRest_min))/Np+sqrt(elas_pRest_min); 
+                p_i = p_i * p_i; 
                 iTables_split.p_tmp[ip] = p_i; 
                 table2d_split_in >> z; 
                 iTables_split.total_rate[iT][ip] = z;
@@ -1280,6 +1281,20 @@ double Tequila::interpolatorElasticTotalRate(double p_eval, double T_eval, proce
     // return result * T; 
 }
 
+double Tequila::interpolatorElasticTotalRate2d(double p_eval, double T_eval, process_type process)
+{
+    gsl_interp2d *interp = gsl_interp2d_alloc(gsl_interp2d_bilinear, NT+1, Nw+1);
+    gsl_interp_accel *xacc = gsl_interp_accel_alloc();
+    gsl_interp_accel *yacc = gsl_interp_accel_alloc();
+    gsl_interp2d_init(interp, elasticTable[process].T_tmp, elasticTable[process].w_tmp, &total_rate_save[process*(NT+1)*(Nw+1)], NT+1, Nw+1);
+    double result; 
+    result = gsl_interp2d_eval(interp, elasticTable[process].T_tmp, elasticTable[process].w_tmp, &total_rate_save[process*(NT+1)*(Nw+1)], T_eval, p_eval, xacc, yacc); 
+    gsl_interp2d_free(interp);
+    gsl_interp_accel_free(xacc);
+    gsl_interp_accel_free(yacc);
+    return result; 
+}
+
 // Use interpolator for total rate of splitting approximation process to estimate the rate up to Lambda
 double Tequila::interpolatorSplitTotalRate(double p_eval, double T_eval, process_type process)
 {
@@ -1304,23 +1319,23 @@ double Tequila::interpolatorSplitTotalRate(double p_eval, double T_eval, process
     // return result * T; 
 }
 
-/*
+
 // Use interpolator to estimate the total rate for different p and T
 double Tequila::interpolatorSplitTotalRate2d(double p_eval, double T_eval, process_type process)
 {
-    gsl_interp2d *interp = gsl_interp2d_alloc(gsl_interp2d_bilinear, NT+1, Nw+2);
+    gsl_interp2d *interp = gsl_interp2d_alloc(gsl_interp2d_bilinear, NT+1, Np+1);
     gsl_interp_accel *xacc = gsl_interp_accel_alloc();
     gsl_interp_accel *yacc = gsl_interp_accel_alloc();
-    gsl_interp2d_init(interp, elasticTable[process].w, elasticTable[process].T_tmp, &total_rate_save[process*(NT+1)*(Nw+2)], NT+1, Nw+2);
+    gsl_interp2d_init(interp, splitTable[process-gg_split].T_tmp, splitTable[process-gg_split].p_tmp, &zb[(process-gg_split)*(NT+1)*(Np+1)], NT+1, Np+1);
     double result; 
-    result = gsl_interp2d_eval(interp, splitTable[process].T_tmp, splitTable[process].w, &total_rate_save[process*(NT+1)*(Nw+2)], p_eval, T_eval, xacc, yacc); 
+    result = gsl_interp2d_eval(interp, splitTable[process-gg_split].T_tmp, splitTable[process-gg_split].p_tmp, &zb[(process-gg_split)*(NT+1)*(Np+1)], T_eval, p_eval, xacc, yacc); 
     gsl_interp2d_free(interp);
     gsl_interp_accel_free(xacc);
     gsl_interp_accel_free(yacc);
     return result; 
 }
-*/
 
+/*
 // Use interpolator to estimate the total rate for different p and T
 double Tequila::interpolatorElasticTotalRate2d(double p_eval, double T_eval, process_type process)
 {
@@ -1335,7 +1350,7 @@ double Tequila::interpolatorElasticTotalRate2d(double p_eval, double T_eval, pro
     gsl_interp_accel_free(yacc);
     return result; 
 }
-
+*/
 double Tequila::Interpolator_dGamma_domega(double omega, double T_eval, process_type process)
 {
     int iT = 0; 

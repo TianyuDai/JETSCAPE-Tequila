@@ -2,9 +2,9 @@
 
 <jetscape>
   
-  <nEvents> 200 </nEvents>
+  <nEvents> 20 </nEvents>
   <setReuseHydro> true </setReuseHydro>
-  <nReuseHydro> 200 </nReuseHydro>
+  <nReuseHydro> 20 </nReuseHydro>
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
   <outputFilename>test_out</outputFilename>
@@ -28,8 +28,8 @@
       <eCM>200</eCM>
       <useHybridHad>0</useHybridHad>
       <LinesToRead>
-	PDF:useHardNPDFA = on
-	PDF:useHardNPDFB = on
+        PDF:useHardNPDFA = on
+        PDF:useHardNPDFB = on
         PDF:nPDFSetA = 1
         PDF:nPDFSetB = 1
       </LinesToRead>
@@ -72,14 +72,14 @@
       <useHybridHad>0</useHybridHad>
       <matter_on> 1 </matter_on>
       <Q0> 2.0 </Q0>      <!-- Switching virtuality from MATTER to other module -->
-      <T0> 0.18 </T0>
+      <T0> 0.16 </T0>
       <vir_factor> 0.25 </vir_factor>
       <in_vac> 1 </in_vac>
       <recoil_on> 0 </recoil_on>
       <broadening_on> 0 </broadening_on>
       <brick_med> 0 </brick_med>   <!-- Set brick_med to 1 while using Brick Hydro module-->
       <brick_length> 5.0 </brick_length>
-      <hydro_Tc> 0.18 </hydro_Tc>
+      <hydro_Tc> 0.16 </hydro_Tc>
       <qhat0> -2.0 </qhat0>  <!-- set qhat0 as negative if using alphas-->
       <alphas> 0.3 </alphas>
     </Matter>
@@ -95,7 +95,7 @@
       <beta_1> 2 </beta_1>
       <beta_2> 2 </beta_2>
       <beta_3> 2 </beta_3>
-      <T_star> 0.18 </T_star> 
+      <T_star> 0.24 </T_star> 
       <alphas_hard_inel> 0.1 </alphas_hard_inel>
       <path>../src/jet/Tequila/</path>
     </Tequila>
