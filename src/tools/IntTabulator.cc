@@ -50,7 +50,8 @@ void IntTabulator::Tabulator_split_Gamma(std::string path, process_type process)
 	    for (size_t j = 0; j <= Np; j++)
         {
             // std::cout << i << " " << j << "\n";
-            pRest = ((double)j)*(elas_pRest_max-elas_pRest_min)/Np+elas_pRest_min; 
+            pRest = ((double)j)*(sqrt(elas_pRest_max)-sqrt(elas_pRest_min))/Np+sqrt(elas_pRest_min); 
+            pRest = pRest * pRest; 
             // std::cout << "pRest " << pRest << "\n";  
             table2d_out << split_Gamma_forTab(pRest, T, process) << " "; 
         }

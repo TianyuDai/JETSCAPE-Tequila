@@ -78,7 +78,7 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 		// double total_rate[2][Nw+1]; 
 		// double total_rate_w[2][Nw+1]; 
 		double dGdw[NT+1][Nw+2]={0.}, dGdq[Nw+1]={0.}; 
-		double w[Nw+2]; 
+		double w[Nw+2], w_tmp[Nw+1]; 
 		double T_tmp[NT+1]; 
         double total_rate[NT+1][Nw+1];  
 	}; 
@@ -98,6 +98,7 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 	}; 
 	vector <split_tables> splitTable; 
 	double *zb = (double*) malloc((nSplitProcess) * (NT+1) * (Np+1) * sizeof(double)); 
+	double *split_rate_save = (double*) malloc((nSplitProcess) * (NT+1) * (Np+1) * sizeof(double)); 
 
 	bool is_empty(std::ifstream& pFile); 
 	bool is_exist (const std::string& name); 
@@ -174,6 +175,7 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
     double interpolatorElasticTotalRate(double p_eval, double T_eval, process_type process); 
     double interpolatorElasticTotalRate2d(double p_eval, double T_eval, process_type process); 
     double interpolatorSplitTotalRate(double p_eval, double T_eval, process_type process); 
+    double interpolatorSplitTotalRate2d(double p_eval, double T_eval, process_type process); 
     // double interpolatorElasticEnergyLoss(double p_eval, double T, process_type process); 
 	double Interpolator_dGamma_domega(double omega, double T_eval, process_type process); 
 	// double Interpolator_dGamma_domega_2d(double omega, double T_eval, process_type process); 
