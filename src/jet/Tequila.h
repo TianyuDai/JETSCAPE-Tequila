@@ -20,7 +20,7 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
     private: 
     // double alphas_soft;
     // double alphas_hard_elas;
-    double beta_1, beta_2, beta_3; 
+    double beta_para, beta_perp; 
     double alphas_hard_inel;
 	// double g_soft;
 	// double g_hard_elas;
@@ -40,7 +40,7 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
     // double qhat_coef; 
 	double Lambda; 
     int recoil_on;
-    double hydro_tStart; 
+    double tStart = 0.1; 
     double pcut;  
 
   	const double nc = 3.; 
@@ -54,7 +54,7 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 
 	const int Nsteps = 500; 
 	const static size_t nElasProcess = 6;
-    const static size_t nConvProcess = 4;
+    const static size_t nConvProcess = 0;
     const static size_t nSplitProcess = 8;
     const static size_t nInelProcess = 3;
     const static size_t nTotalProcess = nElasProcess + nConvProcess + nSplitProcess + nInelProcess + 1; 
@@ -67,11 +67,12 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 
 	// gg, gq, qg, qq, qqp, qqb
 	// There are two more processes in splitting approximation than large-angle elastic interaction
+/*
         double splitting_c_lambda[nSplitProcess] = {4.*CA*CA, 16.*CA*2.*nf, 4.*CF*CA, 16.*CF, 16.*CF*(2.*nf-2.), 16.*CF, 0., 0.};
         double splitting_c_p[nSplitProcess] = {5./6*CA*CA, 2.*nf*(2.*CF-4.*CA), CF*CF/2-CF*CA, -4.*CF, -4.*CF*(2.*nf-2), 4.*CF*(6.*CF-3.*CA-1./3), nf*(-CA/3-CF), -8.*CF/3*(CA+3.*CF)};
         double splitting_c_ln[nSplitProcess] = {-2.*CA*CA, 2.*nf*(4.*CF-8.*CA), CF*CF-2.*CF*CA, 8.*CF*(2.*CF-CA-1.), -8.*CF*(2.*nf-2.), -8.*CF*(2.*CF-CA+1.), nf*CF, 8.*CF};
         double Toverp_c_ln[nElasProcess+nConvProcess] = {-2.*CA*CA, -CA*CA, -2.*CF*CA, CF*(2.*CF-CA-1.), -CF, -CF*(2.*CF-CA+1.), -2.*nf*CF*CF/2, -CF*CF, -2.*nf*CF*CF, -CF*CF/2};
-
+*/
 	struct tables
 	{
 
@@ -99,7 +100,16 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 	vector <split_tables> splitTable; 
 	double *zb = (double*) malloc((nSplitProcess) * (NT+1) * (Np+1) * sizeof(double)); 
 	double *split_rate_save = (double*) malloc((nSplitProcess) * (NT+1) * (Np+1) * sizeof(double)); 
-
+    
+	struct fixed_tables
+	{
+		// double x[Nw_fixed+2], y[Nw_fixed+1]={0.}; 
+		double w[Nw_fixed+2], q[Nq+1]; 
+		double rate_qperp2[Nw_fixed+2][Nq+1];  
+	}; 
+	vector <fixed_tables> elastic_fixedCoup_Table; 
+	double *zc = (double*) malloc((nElasProcess+nConvProcess) * (Nw_fixed+2) * (Nq+1) * sizeof(double)); 
+    
 	bool is_empty(std::ifstream& pFile); 
 	bool is_exist (const std::string& name); 
 	
@@ -180,7 +190,7 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
 	double Interpolator_dGamma_domega(double omega, double T_eval, process_type process); 
 	// double Interpolator_dGamma_domega_2d(double omega, double T_eval, process_type process); 
 	double Extrapolator_dGamma_domega(double omega, process_type process); 
-	// double Interpolator_dGamma_domega_qperp2(double omega, double qperp2, process_type process); 
+	double Interpolator_dGamma_domega_qperp2(double omega, double qperp2, process_type process); 
 	double splittingF(double x, process_type process); 
 	double splittingRateOmega(double pRest, double x, double T, process_type process);
     double running_coupling(double Q, double T);  
@@ -191,9 +201,9 @@ class Tequila : public JetEnergyLossModule<Tequila> //, public std::enable_share
   	void DoEnergyLoss(double deltaT, double time, double Q2, vector<Parton>& pIn, vector<Parton>& pOut);
   	process_type DetermineProcess(double pRest, double T, double deltaTRest, int Id); 
   	FourVector Momentum_Update(double omega, double qperp, double T, FourVector pVec); 
-  	// double TransverseMomentum_Transfer(double pRest, double omega, double T, process_type process); 
+  	double TransverseMomentum_Transfer(double pRest, double omega, double T, process_type process); 
   	double Energy_Transfer(double pRest, double T, process_type process); 
-	// double TransverseMomentum_Transfer_Split(double pRest, double omega, double T, process_type process);
+	double TransverseMomentum_Transfer_Split(double pRest, double omega, double T, process_type process);
     double splitdGammadxdqperp2Rate(double deltaE_over_2T);  
   	double Energy_Transfer_Split(double pRest, double T, process_type process); 
 	double xSampling(double pRest, double T, process_type process); 

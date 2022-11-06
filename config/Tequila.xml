@@ -7,8 +7,8 @@
   <nReuseHydro> 100000 </nReuseHydro-->
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
-  <!--outputFilename>Tequila_brick_1fm_fixedCoupling</outputFilename-->
-  <outputFilename>test</outputFilename>
+  <outputFilename>test_out</outputFilename>
+  <!--outputFilename>running_coupling_mu4_brick_test</outputFilename-->
   <vlevel> 0 </vlevel>
   <nEvents_printout> 1 </nEvents_printout>
 
@@ -51,16 +51,15 @@
       <!--alpha_s> 0.3 </alpha_s-->
       <pcut> 2. </pcut>
       <Q0> 1.0 </Q0>
-      <hydro_Tc> 0.3 </hydro_Tc>
+      <hydro_Tc> 0.16 </hydro_Tc>
       <recoil_on> 1 </recoil_on>
       <muomega_over_T> 4. </muomega_over_T>
       <muqperp_over_T> 4. </muqperp_over_T>
-      <beta_1> 2 </beta_1>
-      <beta_2> 2 </beta_2>
-      <beta_3> 2 </beta_3>
-      <T_star> 0.18 </T_star> 
+      <beta_perp> 0 </beta_perp>
+      <beta_para> 0 </beta_para>
+      <T_star> 0.3 </T_star> 
       <!--alphas_hard_elas> 0.3 </alphas_hard_elas-->
-      <alphas_hard_inel> 0.1 </alphas_hard_inel>
+      <alphas_hard_inel> 0.2 </alphas_hard_inel>
       <path>../src/jet/Tequila/</path>
     </Tequila>
 

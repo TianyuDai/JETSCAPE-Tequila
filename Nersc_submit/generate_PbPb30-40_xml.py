@@ -34,18 +34,19 @@ args = parser.parse_args()
 dp = args.dp
 
 # pTHat_list = [1., 3., 5., 8., 11., 15., 20., 25., 30., 35., 40., 45., 50., 60., 70., 80., 100.]
-pTHat_list = [3., 4., 5., 7., 9., 11., 13., 15., 17., 20., 25., 30., 35., 40., 45., 50., 55., 60., 70., 80., 90., 100.]
+# pTHat_list = [3., 4., 5., 7., 9., 11., 13., 15., 17., 20., 25., 30., 35., 40., 45., 50., 55., 60., 70., 80., 90., 100.]
+pTHat_list = [4., 6., 10., 15., 20., 30., 45., 60., 80., 110., 160., 210., 260., 310., 400., 500., 600., 800., 1000., 1380.]
 # pTHat_list = [3., 5., 8., 11.]
 # pTHat_list = [10., 20., 50., 80., 110., 160., 210., 260., 310., 400., 500., 600., 800., 1000., 1380.]
 # for dp in range(): 
 for i, new_pT_hat_min in enumerate(pTHat_list[:-1]): 
-    for task in range(20): 
-        with open('../config/Tequila_AuAu200.xml', 'rb') as xml_file: 
+    for task in range(40): 
+        with open('../config/Tequila_PbPb2760.xml', 'rb') as xml_file: 
             tree = ET.parse(xml_file)
             root = tree.getroot()
         
             name = root.find('outputFilename') 
-            file_name = '/global/cscratch1/sd/td115/output/Tequila/running_coupling/AuAu200/centrality0-10/dps/dp%d/%.6f_i%d' %(dp, new_pT_hat_min, task)
+            file_name = '/global/cscratch1/sd/td115/output/Tequila/running_coupling/PbPb2760/centrality30-40/dps/dp%d/%.6f_i%d' %(dp, new_pT_hat_min, task)
             name.text = file_name
             name.set('updated', 'yes')
 
@@ -56,13 +57,13 @@ for i, new_pT_hat_min in enumerate(pTHat_list[:-1]):
 
             IS = root.find('IS')
             is_path = IS.find('initial_profile_path')
-            is_path.text = '/global/cscratch1/sd/td115/AuAu200_hydro/centrality0-10/part-%d' %task
+            is_path.text = '/global/cscratch1/sd/td115/PbPb2760_hydro/centrality30-40/part-%d' %task
             is_path.set('updated', 'yes')
 
             hydro = root.find('Hydro')
             hydro_file = hydro.find('hydro_from_file')
             hydro_path = hydro_file.find('hydro_files_folder')
-            hydro_path.text = '/global/cscratch1/sd/td115/AuAu200_hydro/centrality0-10/part-%d' %task
+            hydro_path.text = '/global/cscratch1/sd/td115/PbPb2760_hydro/centrality30-40/part-%d' %task
             hydro_path.set('updated', 'yes')
 
             hard = root.find('Hard')
@@ -80,7 +81,7 @@ for i, new_pT_hat_min in enumerate(pTHat_list[:-1]):
             eloss = root.find('Eloss')
             matter = eloss.find('Matter')
             Q0 = matter.find('Q0')
-            Q0.text = str(Q0_list[dp])
+            Q0.text = str(1.392810945*Q0_list[dp])
             Q0.set('updated', 'yes')
 
             tequila = eloss.find('Tequila')
@@ -97,12 +98,12 @@ for i, new_pT_hat_min in enumerate(pTHat_list[:-1]):
             T_star.set('updated', 'yes')
             
             Q0 = tequila.find('Q0')
-            Q0.text = str(Q0_list[dp])
+            Q0.text = str(1.392810945*Q0_list[dp])
             Q0.set('updated', 'yes')
             
             alphas_hard_inel = tequila.find('alphas_hard_inel')
             alphas_hard_inel.text = str(ghard_list[dp])
             alphas_hard_inel.set('updated', 'yes')
             
-            tree.write('../dps/AuAu200/centrality0-10/dp%d/Tequila_AuAu200_%.6f_i%d.xml' %(dp, new_pT_hat_min, task), xml_declaration=True, encoding='utf-8')
+            tree.write('../dps/PbPb2760/centrality30-40/dp%d/Tequila_PbPb2760_%.6f_i%d.xml' %(dp, new_pT_hat_min, task), xml_declaration=True, encoding='utf-8')
 

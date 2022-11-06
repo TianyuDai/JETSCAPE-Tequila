@@ -17,4 +17,4 @@ export PATH=$PATH:/usr/common/tig/taskfarmer/1.5/bin:$(pwd)
 export THREADS=64
 
 cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build
-runcommands.sh Tequila_AuAu200_tasks_list.txt
+runcommands.sh task_list_dps/AuAu200/centrality20-30/Tequila_AuAu200_dp$1_tasks_list.txt

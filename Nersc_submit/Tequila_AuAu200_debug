@@ -14,7 +14,7 @@
 #SBATCH --error  /global/cscratch1/sd/%u/slurm/%x-%j.err
 
 export PATH=$PATH:/usr/common/tig/taskfarmer/1.5/bin:$(pwd)
-export THREADS=64
+export THREADS=32
 
 cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build
 runcommands.sh Tequila_AuAu200_tasks_list.txt

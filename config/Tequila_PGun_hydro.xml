@@ -2,12 +2,12 @@
 
 <jetscape>
   
-  <nEvents> 20000 </nEvents>
+  <nEvents> 50000 </nEvents>
   <setReuseHydro> true </setReuseHydro>
-  <nReuseHydro> 4000 </nReuseHydro>
+  <nReuseHydro> 250 </nReuseHydro>
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
-  <outputFilename>test_out</outputFilename>
+  <outputFilename>PGun_hydro_AuAu0-10_dt0.05_t20</outputFilename>
   <vlevel> 0 </vlevel>
   <nEvents_printout> 1 </nEvents_printout>
 
@@ -16,24 +16,19 @@
   </Random>
   <!-- Inital State Module  -->
   <IS>
-    <initial_profile_path>/global/cscratch1/sd/td115/PbPb2760_hydro/centrality0-5/part-0</initial_profile_path>
+    <initial_profile_path>/global/cscratch1/sd/td115/AuAu200_total/centrality0-10</initial_profile_path>
   </IS>
   
   <!-- Hard Process -->
   <Hard>
-    <PythiaGun>
-      <FSR_on>0</FSR_on>
-      <pTHatMin>1000</pTHatMin>
-      <pTHatMax>1380</pTHatMax>
-      <eCM>2760</eCM>
-      <useHybridHad>0</useHybridHad>
-      <LinesToRead>
-        PDF:useHardNPDFA = on
-        PDF:useHardNPDFB = on
-        PDF:nPDFSetA = 1
-        PDF:nPDFSetB = 1
-      </LinesToRead>
-    </PythiaGun>
+    <!-- Parton Gun test with fixed pT and fixed IS pos = 0  -->
+    <PGun>
+      <name>PGun</name>
+      <pT>100</pT>
+      <parID>21</parID>
+      <!--useHybridHad>0</useHybridHad-->
+    </PGun>
+
   </Hard>
   
   <!--Preequilibrium Dynamics Module -->
@@ -54,7 +49,7 @@
       <name>Hydro from file </name>
       <read_in_multiple_hydro>1</read_in_multiple_hydro>
       <boost_invariant_> 1</boost_invariant_> 
-      <hydro_files_folder>/global/cscratch1/sd/td115/PbPb2760_hydro/centrality0-5/part-0</hydro_files_folder>
+      <hydro_files_folder>/global/cscratch1/sd/td115/AuAu200_total/centrality0-10</hydro_files_folder>
     </hydro_from_file>
   </Hydro>
   
@@ -63,8 +58,8 @@
 
     <deltaT>0.05</deltaT>
     <formTime> -0.1</formTime>
-    <maxT>50</maxT>
-    <tStart> 0.2 </tStart> <!-- Start time of jet quenching, proper time, fm/c   -->
+    <maxT>20</maxT>
+    <tStart> 0.6 </tStart> <!-- Start time of jet quenching, proper time, fm/c   -->
     <mutex>ON</mutex>
 
     <Matter>
@@ -87,15 +82,16 @@
     <Tequila>
       <name> Tequila </name>
       <pcut> 2. </pcut>
-      <Q0> 2.0 </Q0>
+      <Q0> 1.0 </Q0>
       <hydro_Tc> 0.16 </hydro_Tc>
       <recoil_on> 1 </recoil_on>
       <muomega_over_T> 4. </muomega_over_T>
       <muqperp_over_T> 4. </muqperp_over_T>
-      <beta_para> 2. </beta_para>
-      <beta_perp> 2. </beta_perp>
-      <T_star> 0.24 </T_star> 
-      <alphas_hard_inel> 0.1 </alphas_hard_inel>
+      <beta_1> 0. </beta_1>
+      <beta_2> 0. </beta_2>
+      <beta_3> 0. </beta_3>
+      <T_star> 0.3 </T_star> 
+      <alphas_hard_inel> 0.2 </alphas_hard_inel>
       <path>../src/jet/Tequila/</path>
     </Tequila>
 
@@ -105,7 +101,7 @@
   <JetHadronization>
     <name>colorless</name>
     <take_recoil>1</take_recoil>
-    <eCMforHadronization>1380</eCMforHadronization>
+    <eCMforHadronization>100</eCMforHadronization>
   </JetHadronization>
   
 </jetscape>

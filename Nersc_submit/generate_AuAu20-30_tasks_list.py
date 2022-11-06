@@ -24,7 +24,7 @@ for dp in range(dp1, dp2+1):
         for i in range(20): 
             pTHatMin = pTHatBins[j]
             pTHatMax = pTHatBins[j+1]
-            print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 AA_wrapper.py --dp %d --task %d --pTHatMin %.6f --pTHatMax %.6f" %(dp, i, pTHatMin, pTHatMax))
+            print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 AA_wrapper_centrality20-30.py --dp %d --task %d --pTHatMin %.6f --pTHatMax %.6f" %(dp, i, pTHatMin, pTHatMax))
             # print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 AA_wrapper_true.py --task %d --pTHatMin %.6f --pTHatMax %.6f" %(i, pTHatMin, pTHatMax))
             # print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 AA_wrapper_smallQ0.py --task %d --pTHatMin %.6f --pTHatMax %.6f" %(i, pTHatMin, pTHatMax))
             # print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 AA_wrapper40-50.py --task %d --pTHatMin %.6f --pTHatMax %.6f" %(i, pTHatMin, pTHatMax))

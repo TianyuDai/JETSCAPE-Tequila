@@ -24,3 +24,6 @@ external_packages/freestream-milne/
 external_packages/smash/smash_code/
 external_packages/ipglasma
 Nersc_submit/Tequila_AuAu200_dp*
+dps/
+output/
+src/jet/Tequila/*

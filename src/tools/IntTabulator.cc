@@ -63,7 +63,7 @@ double running_coupling(double Q, double T)
 {
     double g_running, alpha_s, lambda_QCD=0.2; 
     // double mu_med = 8.*0.3; 
-    double Q_med = 4.*T;
+    double Q_med = 2.*M_PI*T;
     double MZ = 91.1876, alpha_s0 = 0.1189; 
     double c = alpha_s0 / (4.*M_PI/9/std::log(std::pow(MZ, 2)/pow(lambda_QCD, 2)));  
     alpha_s = 4.*M_PI/9/std::log(std::pow(std::max(Q*T, Q_med), 2)/pow(lambda_QCD, 2)) * c;
@@ -83,7 +83,7 @@ double IntTabulator::split_Gamma_forTab(double pRest, double T, process_type pro
 	F.params = &p; 
 	double result, err; 
     double pcut = 2.; 
-    double Lambda = std::min({pcut, std::sqrt(3.*pRest*T), pRest/2});
+    double Lambda = std::min({pcut, std::sqrt(3.*pRest*T), T*elas_omega_over_T_pos_max, pRest/2});
     // std::cout << "pRest and T " << pRest << " " << T << "\n"; 
     if (pRest/2 > Lambda)
     {
@@ -312,7 +312,7 @@ double dGamma_domega_qperp2_k(double k, void *params)
 		case qqp: F.function = dGamma_domega_qperp2_k_phi_qqp; 
 			 break; 
 		case qqb: F.function = dGamma_domega_qperp2_k_phi_qqb; 
-			 break; 
+			 break; /*
 		case GqQg: F.function = dGamma_domega_qperp_k_phi_GqQg; 
 			 break; 
 		case QgGq: F.function = dGamma_domega_qperp_k_phi_QgGq; 
@@ -320,7 +320,7 @@ double dGamma_domega_qperp2_k(double k, void *params)
 		case GgQbq: F.function = dGamma_domega_qperp_k_phi_GgQbq; 
 			 break; 
 		case QbqGg: F.function = dGamma_domega_qperp_k_phi_QbqGg; 
-			 break; 
+			 break; */
 		default: std::cout << "The process determination is wrong! The process is " << p->f_process; 
 			 break; 
 	}

@@ -2,7 +2,7 @@
 
 <jetscape>
   
-  <nEvents> 1 </nEvents>
+  <nEvents> 30000 </nEvents>
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
   <outputFilename>test_out</outputFilename>
@@ -10,7 +10,7 @@
   <!-- Hard Process -->
   <Hard>
     <PythiaGun>
-      <pTHatMin>1</pTHatMin>
+      <pTHatMin>1000</pTHatMin>
       <pTHatMax>1380</pTHatMax>
       <eCM>2760</eCM>
     </PythiaGun>
@@ -19,7 +19,7 @@
   <!--Eloss Modules -->
   <Eloss>
     <Matter> 
-      <Q0> 1.0 </Q0>
+      <Q0> 2.0 </Q0>
       <in_vac> 1 </in_vac>
       <vir_factor> 0.25 </vir_factor>
       <recoil_on> 0 </recoil_on>

@@ -2,9 +2,9 @@
 
 <jetscape>
   
-  <nEvents> 20 </nEvents>
+  <nEvents> 50000 </nEvents>
   <setReuseHydro> true </setReuseHydro>
-  <nReuseHydro> 20 </nReuseHydro>
+  <nReuseHydro> 5000 </nReuseHydro>
   
   <JetScapeWriterAscii> on </JetScapeWriterAscii>
   <outputFilename>test_out</outputFilename>
@@ -16,15 +16,15 @@
   </Random>
   <!-- Inital State Module  -->
   <IS>
-    <initial_profile_path>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</initial_profile_path>
+    <initial_profile_path>/global/cscratch1/sd/td115/AuAu200_hydro/centrality0-10/part-0</initial_profile_path>
   </IS>
   
   <!-- Hard Process -->
   <Hard>
     <PythiaGun>
       <FSR_on>0</FSR_on>
-      <pTHatMin>60</pTHatMin>
-      <pTHatMax>80</pTHatMax>
+      <pTHatMin>90</pTHatMin>
+      <pTHatMax>100</pTHatMax>
       <eCM>200</eCM>
       <useHybridHad>0</useHybridHad>
       <LinesToRead>
@@ -54,17 +54,17 @@
       <name>Hydro from file </name>
       <read_in_multiple_hydro>1</read_in_multiple_hydro>
       <boost_invariant_> 1</boost_invariant_> 
-      <hydro_files_folder>/global/cscratch1/sd/td115/VISHNew_AuAu200/40-50_centrality</hydro_files_folder>
+      <hydro_files_folder>/global/cscratch1/sd/td115/AuAu200_hydro/centrality0-10/part-0</hydro_files_folder>
     </hydro_from_file>
   </Hydro>
   
   <!--Eloss Modules -->
   <Eloss>
 
-    <deltaT>0.5</deltaT>
+    <deltaT>0.05</deltaT>
     <formTime> -0.1</formTime>
-    <maxT>250</maxT>
-    <tStart> 0.6 </tStart> <!-- Start time of jet quenching, proper time, fm/c   -->
+    <maxT>50</maxT>
+    <tStart> 0.2 </tStart> <!-- Start time of jet quenching, proper time, fm/c   -->
     <mutex>ON</mutex>
 
     <Matter>
@@ -88,13 +88,12 @@
       <name> Tequila </name>
       <pcut> 2. </pcut>
       <Q0> 2.0 </Q0>
-      <hydro_Tc> 0.18 </hydro_Tc>
+      <hydro_Tc> 0.16 </hydro_Tc>
       <recoil_on> 1 </recoil_on>
       <muomega_over_T> 4. </muomega_over_T>
       <muqperp_over_T> 4. </muqperp_over_T>
-      <beta_1> 2 </beta_1>
-      <beta_2> 2 </beta_2>
-      <beta_3> 2 </beta_3>
+      <beta_perp> 2. </beta_perp>
+      <beta_para> 2. </beta_para>
       <T_star> 0.24 </T_star> 
       <alphas_hard_inel> 0.1 </alphas_hard_inel>
       <path>../src/jet/Tequila/</path>
