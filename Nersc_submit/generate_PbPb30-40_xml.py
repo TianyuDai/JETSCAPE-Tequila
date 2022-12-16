@@ -81,7 +81,7 @@ for i, new_pT_hat_min in enumerate(pTHat_list[:-1]):
             eloss = root.find('Eloss')
             matter = eloss.find('Matter')
             Q0 = matter.find('Q0')
-            Q0.text = str(1.392810945*Q0_list[dp])
+            Q0.text = str(1.180174116*Q0_list[dp])
             Q0.set('updated', 'yes')
 
             tequila = eloss.find('Tequila')
@@ -98,7 +98,7 @@ for i, new_pT_hat_min in enumerate(pTHat_list[:-1]):
             T_star.set('updated', 'yes')
             
             Q0 = tequila.find('Q0')
-            Q0.text = str(1.392810945*Q0_list[dp])
+            Q0.text = str(1.180174116*Q0_list[dp])
             Q0.set('updated', 'yes')
             
             alphas_hard_inel = tequila.find('alphas_hard_inel')

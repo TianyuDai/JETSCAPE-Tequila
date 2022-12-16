@@ -14,13 +14,14 @@ pTHat_list = [3., 4., 5., 7., 9., 11., 13., 15., 17., 20., 25., 30., 35., 40., 4
 # dp_list = range(2, 3, 1)
 # dp_list = [16, 17, 21]
 
-# for dp in range(20, 40): 
-for dp in range(51, 60): 
+for dp in range(1): 
     for pTHat in pTHat_list[:-1]: 
-        for i in range(20): 
+        for i in range(20, 100): 
             # print('cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && ./FinalStateHadrons $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality0-10/dps/dp%d/%.6f_i%d.dat $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality0-10/dps/dp%d/hadrons/%.6f_i%d_chargedHadrons.txt' %(dp, pTHat, i, dp, pTHat, i))
-            print('cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && ./FinalStateHadrons $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality20-30/dps/dp%d/%.6f_i%d.dat $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality20-30/dps/dp%d/hadrons/%.6f_i%d_chargedHadrons.txt' %(dp, pTHat, i, dp, pTHat, i))
-            # print('cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && ./FinalStateHadrons $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality0-10/tau0_0.2/%.6f_i%d.dat $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality0-10/tau0_0.2/hadrons/%.6f_i%d_chargedHadrons.txt' %(pTHat, i, pTHat, i))
+            # print('cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && ./FinalStateHadrons $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality20-30/dps/dp%d/%.6f_i%d.dat $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality20-30/dps/dp%d/hadrons/%.6f_i%d_chargedHadrons.txt' %(dp, pTHat, i, dp, pTHat, i))
+            print('cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && ./FinalStateHadrons $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality40-50/MAP/%.6f_i%d.dat $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality40-50/MAP/hadrons/%.6f_i%d_chargedHadrons.txt' %(pTHat, i, pTHat, i))
+            # print('cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && ./FinalStateHadrons $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality20-30/val/%.6f_i%d.dat $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality20-30/val/hadrons/%.6f_i%d_chargedHadrons.txt' %(pTHat, i, pTHat, i))
+            # print('cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && ./FinalStateHadrons $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality40-50/val/%.6f_i%d.dat $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality40-50/val/hadrons/%.6f_i%d_chargedHadrons.txt' %(pTHat, i, pTHat, i))
             # print('cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && ./FinalStateHadrons $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality0-10/tau0_0.5/%.6f_i%d.dat $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality0-10/tau0_0.5/hadrons/%.6f_i%d_chargedHadrons.txt' %(pTHat, i, pTHat, i))
             # print('cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && ./FinalStateHadrons $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality0-10/tau0_0.8/%.6f_i%d.dat $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality0-10/tau0_0.8/hadrons/%.6f_i%d_chargedHadrons.txt' %(pTHat, i, pTHat, i))
             # print('cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && ./FinalStateHadrons $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality0-10/Q02.5/%.6f_i%d.dat $SCRATCH/output/Tequila/running_coupling/AuAu200/centrality0-10/Q02.5/hadrons/%.6f_i%d_chargedHadrons.txt' %(pTHat, i, pTHat, i))

@@ -19,13 +19,14 @@ dp2 = args.dp2
 
 print('#!/usr/bin/env bash\n')
 
-for dp in range(dp1, dp2+1): 
+# for dp in range(dp1, dp2+1): 
+for dp in range(1): 
     for j in range(len(pTHatBins)-1): 
-        for i in range(20): 
+        for i in range(20, 100): 
             pTHatMin = pTHatBins[j]
             pTHatMax = pTHatBins[j+1]
-            print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 AA_wrapper.py --dp %d --task %d --pTHatMin %.6f --pTHatMax %.6f" %(dp, i, pTHatMin, pTHatMax))
-            # print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 AA_wrapper_true.py --task %d --pTHatMin %.6f --pTHatMax %.6f" %(i, pTHatMin, pTHatMax))
+            # print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 AA_wrapper.py --dp %d --task %d --pTHatMin %.6f --pTHatMax %.6f" %(dp, i, pTHatMin, pTHatMax))
+            print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 AA_wrapper_true.py --task %d --pTHatMin %.6f --pTHatMax %.6f" %(i, pTHatMin, pTHatMax))
             # print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 AA_wrapper_smallQ0.py --task %d --pTHatMin %.6f --pTHatMax %.6f" %(i, pTHatMin, pTHatMax))
             # print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 AA_wrapper40-50.py --task %d --pTHatMin %.6f --pTHatMax %.6f" %(i, pTHatMin, pTHatMax))
             # print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 AA_wrapper20-30.py --task %d --pTHatMin %.6f --pTHatMax %.6f" %(i, pTHatMin, pTHatMax))

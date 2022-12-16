@@ -1,0 +1,20 @@
+#!/bin/bash
+#SBATCH -n 8 -c 16
+
+#SBATCH --time=00:30:00
+
+#SBATCH --qos=debug
+
+#SBATCH --mail-type ALL
+#SBATCH --mail-user td115@duke.edu
+
+#SBATCH --constraint=haswell
+
+#SBATCH --output /global/cscratch1/sd/%u/slurm/%x-%j.out
+#SBATCH --error  /global/cscratch1/sd/%u/slurm/%x-%j.err
+
+export PATH=$PATH:/usr/common/tig/taskfarmer/1.5/bin:$(pwd)
+export THREADS=128
+
+cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build
+runcommands.sh Hadron_PbPb2_tasks_list.txt

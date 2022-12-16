@@ -25,3 +25,4 @@ for j in range(len(pTHatBins)-1):
         pTHatMin = pTHatBins[j]
         pTHatMax = pTHatBins[j+1]
         print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 PbPb_wrapper.py --dp %d --task %d --pTHatMin %.6f --pTHatMax %.6f" %(dp, i, pTHatMin, pTHatMax))
+        # print("cd /global/homes/t/td115/running_coupling/JETSCAPE-Tequila/build && python3 PbPb_wrapper_val.py --dp %d --task %d --pTHatMin %.6f --pTHatMax %.6f" %(dp, i, pTHatMin, pTHatMax))

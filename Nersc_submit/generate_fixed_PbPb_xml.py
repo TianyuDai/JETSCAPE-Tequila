@@ -17,7 +17,7 @@ for i, new_pT_hat_min in enumerate(pTHat_list[:-1]):
             root = tree.getroot()
         
             name = root.find('outputFilename') 
-            file_name = '/global/cscratch1/sd/td115/output/Tequila/running_coupling/PbPb2760/centrality30-40/Q02.2/%.6f_i%d' %(new_pT_hat_min, task)
+            file_name = '/global/cscratch1/sd/td115/output/Tequila/running_coupling/PbPb2760/centrality0-5/val/%.6f_i%d' %(new_pT_hat_min, task)
             name.text = file_name
             name.set('updated', 'yes')
 
@@ -28,13 +28,13 @@ for i, new_pT_hat_min in enumerate(pTHat_list[:-1]):
 
             IS = root.find('IS')
             is_path = IS.find('initial_profile_path')
-            is_path.text = '/global/cscratch1/sd/td115/PbPb2760_hydro/centrality30-40/part-%d' %task
+            is_path.text = '/global/cscratch1/sd/td115/PbPb2760_hydro/centrality0-5/part-%d' %task
             is_path.set('updated', 'yes')
 
             hydro = root.find('Hydro')
             hydro_file = hydro.find('hydro_from_file')
             hydro_path = hydro_file.find('hydro_files_folder')
-            hydro_path.text = '/global/cscratch1/sd/td115/PbPb2760_hydro/centrality30-40/part-%d' %task
+            hydro_path.text = '/global/cscratch1/sd/td115/PbPb2760_hydro/centrality0-5/part-%d' %task
             hydro_path.set('updated', 'yes')
 
             hard = root.find('Hard')
@@ -52,7 +52,7 @@ for i, new_pT_hat_min in enumerate(pTHat_list[:-1]):
             eloss = root.find('Eloss')
             matter = eloss.find('Matter')
             Q0 = matter.find('Q0')
-            Q0.text = str(2.228497512)
+            Q0.text = str(1.6*1.389989622)
             Q0.set('updated', 'yes')
 
             tequila = eloss.find('Tequila')
@@ -69,12 +69,12 @@ for i, new_pT_hat_min in enumerate(pTHat_list[:-1]):
             T_star.set('updated', 'yes')
             
             Q0 = tequila.find('Q0')
-            Q0.text = str(2.228497512)
+            Q0.text = str(1.6*1.389989622)
             Q0.set('updated', 'yes')
             
             alphas_hard_inel = tequila.find('alphas_hard_inel')
             alphas_hard_inel.text = str(0.25)
             alphas_hard_inel.set('updated', 'yes')
             
-            tree.write('../config_files/Tequila_PbPb2760_centrality30-40_Q02.2_%.6f_i%d.xml' %(new_pT_hat_min, task), xml_declaration=True, encoding='utf-8')
+            tree.write('../config_files/Tequila_PbPb2760_centrality0-5_val_%.6f_i%d.xml' %(new_pT_hat_min, task), xml_declaration=True, encoding='utf-8')
 
